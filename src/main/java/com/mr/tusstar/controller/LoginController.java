@@ -20,5 +20,4 @@ public class LoginController {
         System.out.println("get id: " + userid);
         return "success";
     }
-
 }
