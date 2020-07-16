@@ -1,5 +1,7 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.entity.Job;
+import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommonService commonService;
     /*
     * 注册功能
     * */
@@ -46,5 +50,19 @@ public class UserController {
         }else {
             return "error_no user";
         }
+    }
+    /*
+     * 查看岗位列表
+     * */
+    @GetMapping("/jobList")
+    public Job[] jobList(){
+        return commonService.mainInfo();
+    }
+    /*
+    * 查看某个岗位的详细信息
+    * */
+    @GetMapping("/job/{id}")
+    public Job jobDetail(@PathVariable(value = "id") int id){
+        return commonService.allInfo(id);
     }
 }
