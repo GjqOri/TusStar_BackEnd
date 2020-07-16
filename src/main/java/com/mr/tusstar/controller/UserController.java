@@ -2,16 +2,12 @@ package com.mr.tusstar.controller;
 
 import com.mr.tusstar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 董帅
  * @date 2020/7/16 - 10:27
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -22,6 +18,10 @@ public class UserController {
     * */
     @PostMapping("/register")
     public String register(String phone, String name, String email, String password){
+        System.out.println(phone);
+        System.out.println(name);
+        System.out.println(email);
+        System.out.println(password);
         if (userService.judgeUserExist(phone).equals("userExist")){
             return "userExist";
         }else {

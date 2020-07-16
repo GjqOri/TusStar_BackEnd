@@ -6,6 +6,7 @@ import com.mr.tusstar.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -59,5 +60,23 @@ public class CompanyUserService {
             return "userExist";
         }
         return "uerNotExist";
+    }
+    /*
+    * 企业发布工作
+    * */
+    public String postJob(String jobName, String nature, String type, String workLocation, int salary,
+                          String degree, String experience, String email, String contactPhone, String contactName,
+                          int recruitingNumbers, String jobWelfare, String jobDesc, String jobContent, HttpSession session){
+        String companyEmail = String.valueOf(session.getAttribute("companyEmail"));
+//        String name = companyUserMapper.selectNameByEmail(companyEmail);
+        String name = "帅强";
+        String postTime = dateFormat.format(new Date());
+        int i = companyUserMapper.postJob(name, jobName, nature, type, workLocation, salary, degree, experience, email
+                , contactPhone, contactName, recruitingNumbers, jobWelfare, jobDesc, jobContent, postTime);
+        if (i == 1){
+            return "success";
+        }else {
+            return "fail";
+        }
     }
 }

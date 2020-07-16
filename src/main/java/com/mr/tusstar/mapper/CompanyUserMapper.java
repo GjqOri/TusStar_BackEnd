@@ -19,6 +19,7 @@ public interface CompanyUserMapper {
                  @Param("fund") int fund, @Param("industry") String industry, @Param("phone") String phone, @Param("email") String email,
                  @Param("introduction") String introduction, @Param("listed") String listed, @Param("headquarters") String headquarters,
                  @Param("website") String website, @Param("password") String password, @Param("registertime") String registertime);
+
     @Insert("INSERT INTO companyuser(email, password, registertime) VALUES(#{email}, #{password}, #{registertime})")
     int insertCompanyUser(@Param("email") String email, @Param("password") String password, @Param("registertime") String registertime);
 
@@ -27,4 +28,14 @@ public interface CompanyUserMapper {
 
     @Select("SELECT EXISTS(SELECT 1 FROM companyinfo WHERE name = #{name} limit 1)")
     int selectByName(@Param("name") String name);
+
+    @Insert("INSERT INTO job(name, jobname, nature, type, worklocation, salary, degree, experience, email, contactphone, contactname, " +
+            "recruitingnumbers, jobwelfare, jobdesc, jobcontent, posttime) VALUES(#{name}, #{jobName},#{nature}, #{type},#{workLocation}, #{salary}," +
+            "#{degree}, #{experience},#{email}, #{contactPhone},#{contactName}, #{recruitingNumbers},#{jobWelfare}, #{jobDesc},#{jobContent}, #{postTime})")
+    int postJob(@Param("name") String name, @Param("jobName") String jobName, @Param("nature") String nature, @Param("type") String type, @Param("workLocation") String workLocation, @Param("salary") int salary,
+                @Param("degree") String degree, @Param("experience") String experience, @Param("email") String email, @Param("contactPhone") String contactPhone, @Param("contactName") String contactName,
+                @Param("recruitingNumbers") int recruitingNumbers, @Param("jobWelfare") String jobWelfare, @Param("jobDesc") String jobDesc, @Param("jobContent") String jobContent, @Param("postTime") String postTime);
+
+    @Select("SELECT name from companyinfo WHERE email=#{email} limit 1")
+    String selectNameByEmail(@Param("email") String email);
 }
