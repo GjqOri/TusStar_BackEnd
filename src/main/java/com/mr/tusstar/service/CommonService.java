@@ -26,4 +26,7 @@ public class CommonService {
     public Job allInfo(int id){
         return commonMapper.allInfo(id);
     }
+    /*
+    * 邮箱验证码
+    * */
 }
