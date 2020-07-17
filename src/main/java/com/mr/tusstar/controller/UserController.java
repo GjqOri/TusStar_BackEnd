@@ -57,7 +57,10 @@ public class UserController {
         String select = userService.queryByPhoneAndPassword(phone, password);
         if (select.equals("success")){
             int id = userService.selectIdByPhone(phone);
+            String name = userService.selectNameByPhone(phone);
             session.setAttribute("userId", id);
+            session.setAttribute("userPhone", phone);
+            session.setAttribute("userName", name);
             return "success";
         }else if (select.equals("fail_password")){
             return "error_password";
@@ -138,5 +141,19 @@ public class UserController {
     @GetMapping("/postedJobs/{name}")
     public Job[] postedJobs(@PathVariable(value = "name") String name){
         return commonService.companyPostedJobs(name);
+    }
+    /*
+    * 用户申请岗位
+    * */
+    @PostMapping("/applyJob/{id}")
+    public String applyJob(@PathVariable(value = "id") int id, HttpSession session){
+        return userService.applyJob(id, session);
+    }
+    /*
+    * 判断用户是否已经申请了职位
+    * */
+    @GetMapping("/ifApplyJob/{id}")
+    public String ifApplyJob(@PathVariable(value = "id") int id, HttpSession session){
+        return userService.ifApplyJob(id, session);
     }
 }

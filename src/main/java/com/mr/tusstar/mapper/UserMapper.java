@@ -1,5 +1,6 @@
 package com.mr.tusstar.mapper;
 
+import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.entity.User;
 import org.apache.ibatis.annotations.Insert;
@@ -43,4 +44,16 @@ public interface UserMapper {
 
     @Select("SELECT EXISTS(SELECT 1 FROM resume WHERE id = #{id})")
     int selectResumeById(@Param("id") int id);
+
+    @Insert("INSERT INTO userapplyjob VALUES(#{id}, #{phone}, #{name}, #{jobName}, #{companyName}, #{status}, #{postTime})")
+    int applyJob(@Param("id") int id, @Param("phone") String phone, @Param("name") String name, @Param("jobName") String jobName, @Param("companyName") String companyName, @Param("status") String status, @Param("postTime") String postTime);
+
+    @Select("SELECT name, jobname FROM job WHERE id=#{id}")
+    Job selectCompanyNameAndJobNameById(@Param("id") int id);
+
+    @Select("SELECT name FROM user WHERE phone=#{phone}")
+    String selectNameByPhone(@Param("phone") String phone);
+
+    @Select("SELECT EXISTS(SELECT 1 FROM userapplyjob WHERE id = #{id} and phone=#{phone})")
+    int ifApplyJob(@Param("id") int id, @Param("phone") String phone);
 }
