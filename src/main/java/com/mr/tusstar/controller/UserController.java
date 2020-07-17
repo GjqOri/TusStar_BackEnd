@@ -156,4 +156,11 @@ public class UserController {
     public String ifApplyJob(@PathVariable(value = "id") int id, HttpSession session){
         return userService.ifApplyJob(id, session);
     }
+    /*
+    * 搜索岗位
+    * */
+    @PostMapping("/searchJobs")
+    public Job[] searchJobs(String jobName, String workLocation, String type){
+        return commonService.searchJobs(jobName, workLocation, type);
+    }
 }
