@@ -1,5 +1,6 @@
 package com.mr.tusstar.service;
 
+import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.entity.User;
 import com.mr.tusstar.mapper.UserMapper;
@@ -114,6 +115,41 @@ public class UserService {
             return "have_resume";
         }else {
             return "no_resume";
+        }
+    }
+    /*
+    * 用户申请岗位,此参数id为job 的id
+    * */
+    public String applyJob(int id, HttpSession session){
+        Job job = userMapper.selectCompanyNameAndJobNameById(id);
+        String companyName = job.getName();
+        String jobName = job.getJobName();
+        String phone = (String) session.getAttribute("userPhone");
+        String name = (String) session.getAttribute("userName");
+        String postTime = dateFormat.format(new Date());
+        int i = userMapper.applyJob(id, phone, name, jobName, companyName, "wait", postTime);
+        if (i == 1){
+            return "success";
+        }else {
+            return "fail";
+        }
+    }
+    /*
+    * 根据phone查询名字
+    * */
+    public String selectNameByPhone(String phone){
+        return userMapper.selectNameByPhone(phone);
+    }
+    /*
+    * 判断用户是否申请了职位
+    * */
+    public String ifApplyJob(int id, HttpSession session){
+        String userPhone = (String) session.getAttribute("userPhone");
+        int i = userMapper.ifApplyJob(id, userPhone);
+        if (i == 1){
+            return "applied";
+        }else {
+            return "firstApply";
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.CompanyUserService;
+import com.mr.tusstar.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
@@ -20,23 +22,34 @@ public class CompanyUserController {
     private CompanyUserService companyUserService;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private MailService mailService;
     /*
     * 企业用户注册
     * */
     @PostMapping("/register")
     public String register(String name, String type, String scale, String area,
                            int fund, String industry, String phone, String email,
-                           String introduction, String listed, String headquarters,
+                           String introduction, String listed, String headQuarters,
                            String website, String password){
         if (companyUserService.judgeCompanyUserExist(name).equals("userExist")){
             return "userExist";
         }
-        int register = companyUserService.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headquarters, website, password);
+        int register = companyUserService.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headQuarters, website, password);
         if (register == 1){
             return "success";
         }else {
             return "fail";
         }
+    }
+    /*
+     * 邮箱验证
+     * */
+    @GetMapping("/emailCode/{mail}")
+    public int emailCode(@PathVariable(name = "mail") String mail){
+        int code = (int) ((Math.random()*9+1)*100000);
+        mailService.sendSimpleEmail(code, mail);
+        return code;
     }
     /*
     * 企业登录
@@ -61,9 +74,8 @@ public class CompanyUserController {
     public String postJob(String jobName, String nature, String type, String workLocation, int salary,
                           String degree, String experience, String email, String contactPhone, String contactName,
                           int recruitingNumbers, String jobWelfare, String jobDesc, String jobContent, HttpSession session){
-        String s = companyUserService.postJob(jobName, nature, type, workLocation, salary,
+        return companyUserService.postJob(jobName, nature, type, workLocation, salary,
                 degree, experience, email, contactPhone, contactName, recruitingNumbers, jobWelfare, jobDesc, jobContent, session);
-        return s;
     }
     /*
      * 查看岗位列表
@@ -78,5 +90,26 @@ public class CompanyUserController {
     @GetMapping("/job/{id}")
     public Job jobDetail(@PathVariable(value = "id") int id){
         return commonService.allInfo(id);
+    }
+    /*
+    * 公司列表
+    * */
+    @GetMapping("/getAllCompanies")
+    public CompanyInfo[] allCompanies(){
+        return commonService.allCompanies();
+    }
+    /*
+    * 查看某个公司详细信息
+    * */
+    @GetMapping("/companyDetail/{id}")
+    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
+        return commonService.comapnyDetail(id);
+    }
+    /*
+    * 查看某个公司曾经发布的岗位
+    * */
+    @GetMapping("/postedJobs/{name}")
+    public Job[] postedJobs(@PathVariable(value = "name") String name){
+        return commonService.companyPostedJobs(name);
     }
 }

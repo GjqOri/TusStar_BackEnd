@@ -1,8 +1,10 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.service.CommonService;
+import com.mr.tusstar.service.MailService;
 import com.mr.tusstar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private MailService mailService;
     /*
     * 注册功能
     * */
@@ -37,6 +41,15 @@ public class UserController {
         }
     }
     /*
+    * 邮箱验证
+    * */
+    @GetMapping("/emailCode/{mail}")
+    public int emailCode(@PathVariable(name = "mail") String mail){
+        int code = (int) ((Math.random()*9+1)*100000);
+        mailService.sendSimpleEmail(code, mail);
+        return code;
+    }
+    /*
     * 登录功能
     * */
     @PostMapping("/login")
@@ -44,7 +57,10 @@ public class UserController {
         String select = userService.queryByPhoneAndPassword(phone, password);
         if (select.equals("success")){
             int id = userService.selectIdByPhone(phone);
+            String name = userService.selectNameByPhone(phone);
             session.setAttribute("userId", id);
+            session.setAttribute("userPhone", phone);
+            session.setAttribute("userName", name);
             return "success";
         }else if (select.equals("fail_password")){
             return "error_password";
@@ -104,5 +120,40 @@ public class UserController {
     @GetMapping("/resumeExist")
     public String resumeExist(HttpSession session){
         return userService.resumeExist(session);
+    }
+    /*
+    * 得到公司列表
+    * */
+    @GetMapping("/getAllCompanies")
+    public CompanyInfo[] allCompanies(){
+        return commonService.allCompanies();
+    }
+    /*
+     * 查看某个公司详细信息
+     * */
+    @GetMapping("/companyDetail/{id}")
+    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
+        return commonService.comapnyDetail(id);
+    }
+    /*
+     * 查看某个公司曾经发布的岗位
+     * */
+    @GetMapping("/postedJobs/{name}")
+    public Job[] postedJobs(@PathVariable(value = "name") String name){
+        return commonService.companyPostedJobs(name);
+    }
+    /*
+    * 用户申请岗位
+    * */
+    @PostMapping("/applyJob/{id}")
+    public String applyJob(@PathVariable(value = "id") int id, HttpSession session){
+        return userService.applyJob(id, session);
+    }
+    /*
+    * 判断用户是否已经申请了职位
+    * */
+    @GetMapping("/ifApplyJob/{id}")
+    public String ifApplyJob(@PathVariable(value = "id") int id, HttpSession session){
+        return userService.ifApplyJob(id, session);
     }
 }

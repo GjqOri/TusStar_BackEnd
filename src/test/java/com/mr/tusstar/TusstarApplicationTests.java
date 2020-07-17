@@ -8,6 +8,7 @@ class TusstarApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

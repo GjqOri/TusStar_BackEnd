@@ -13,12 +13,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyUserMapper {
 
-    @Insert("INSERT INTO companyinfo(name, type, scale, area, fund, industry, phone, email, introduction, listed, headquarters, website, password, registertime)" +
-            "VALUES(#{name}, #{type}, #{scale}, #{area}, #{fund}, #{industry}, #{phone}, #{email}, #{introduction}, #{listed}, #{headquarters}, #{website}, #{password}, #{registertime})")
+    @Insert("INSERT INTO companyinfo(name, type, scale, area, fund, industry, phone, email, introduction, listed, headquarters, website, registertime)" +
+            "VALUES(#{name}, #{type}, #{scale}, #{area}, #{fund}, #{industry}, #{phone}, #{email}, #{introduction}, #{listed}, #{headquarters}, #{website}, #{registertime})")
     int register(@Param("name") String name, @Param("type") String type, @Param("scale") String scale, @Param("area") String area,
                  @Param("fund") int fund, @Param("industry") String industry, @Param("phone") String phone, @Param("email") String email,
                  @Param("introduction") String introduction, @Param("listed") String listed, @Param("headquarters") String headquarters,
-                 @Param("website") String website, @Param("password") String password, @Param("registertime") String registertime);
+                 @Param("website") String website, @Param("registertime") String registertime);
 
     @Insert("INSERT INTO companyuser(email, password, registertime) VALUES(#{email}, #{password}, #{registertime})")
     int insertCompanyUser(@Param("email") String email, @Param("password") String password, @Param("registertime") String registertime);

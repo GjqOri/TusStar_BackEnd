@@ -12,6 +12,9 @@
 - junit
 - fastjson
 - commons-lang3(Utils)
+- lombok
+- persistence-api
+- spring-boot-starter-mail
 
 
 
