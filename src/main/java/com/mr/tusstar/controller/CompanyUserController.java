@@ -1,10 +1,10 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.entity.Job;
+import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.CompanyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.servlet.http.HttpSession;
@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 public class CompanyUserController {
     @Autowired
     private CompanyUserService companyUserService;
+    @Autowired
+    private CommonService commonService;
     /*
     * 企业用户注册
     * */
@@ -62,5 +64,19 @@ public class CompanyUserController {
         String s = companyUserService.postJob(jobName, nature, type, workLocation, salary,
                 degree, experience, email, contactPhone, contactName, recruitingNumbers, jobWelfare, jobDesc, jobContent, session);
         return s;
+    }
+    /*
+     * 查看岗位列表
+     * */
+    @GetMapping("/jobList")
+    public Job[] jobList(){
+        return commonService.mainInfo();
+    }
+    /*
+     * 查看某个岗位的详细信息
+     * */
+    @GetMapping("/job/{id}")
+    public Job jobDetail(@PathVariable(value = "id") int id){
+        return commonService.allInfo(id);
     }
 }

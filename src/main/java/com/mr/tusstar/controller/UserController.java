@@ -1,8 +1,13 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.entity.Job;
+import com.mr.tusstar.entity.Resume;
+import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * @author 董帅
@@ -13,15 +18,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommonService commonService;
     /*
     * 注册功能
     * */
     @PostMapping("/register")
     public String register(String phone, String name, String email, String password){
-        System.out.println(phone);
-        System.out.println(name);
-        System.out.println(email);
-        System.out.println(password);
         if (userService.judgeUserExist(phone).equals("userExist")){
             return "userExist";
         }else {
@@ -37,14 +40,69 @@ public class UserController {
     * 登录功能
     * */
     @PostMapping("/login")
-    public String login(String phone, String password){
+    public String login(String phone, String password, HttpSession session){
         String select = userService.queryByPhoneAndPassword(phone, password);
         if (select.equals("success")){
+            int id = userService.selectIdByPhone(phone);
+            session.setAttribute("userId", id);
             return "success";
         }else if (select.equals("fail_password")){
             return "error_password";
         }else {
             return "error_no user";
         }
+    }
+    /*
+     * 查看岗位列表
+     * */
+    @GetMapping("/jobList")
+    public Job[] jobList(){
+        return commonService.mainInfo();
+    }
+    /*
+    * 查看某个岗位的详细信息
+    * */
+    @GetMapping("/job/{id}")
+    public Job jobDetail(@PathVariable(value = "id") int id){
+        return commonService.allInfo(id);
+    }
+    /*
+    * 创建简历
+    * */
+    @PostMapping("/createResume")
+    public String createResume(String name, String degree, String birth, String sex,
+                               String nation, String introduction, String address,
+                               String phone, String email, String school, String department,
+                               String major, String educationalSystem, String timeOfEnrollment,
+                               String overHeadInfo, int salary, String internInfo, HttpSession session){
+        return userService.createResume(name, degree, birth, sex, nation, introduction, address, phone, email,
+                school, department, major, educationalSystem, timeOfEnrollment, overHeadInfo,
+                salary, internInfo, session);
+    }
+    /*
+    * 完善简历前向前端发送已有的数据
+    * */
+    @GetMapping("/getResume")
+    public Resume getResume(HttpSession session){
+        return userService.selectAllById(session);
+    }
+    /*
+    * 完善后提交简历
+    * */
+    @PostMapping("/updateResume")
+    public String updateResume(String name, String degree, String birth, String sex,
+                               String nation, String introduction, String address,
+                               String phone, String email, String school, String department,
+                               String major, String educationalSystem, String timeOfEnrollment,
+                               String overHeadInfo, int salary, String internInfo, HttpSession session){
+        return userService.updateResume(name, degree, birth, sex, nation, introduction, address, phone, email,
+                school, department, major, educationalSystem, timeOfEnrollment, overHeadInfo, salary, internInfo, session);
+    }
+    /*
+    * 判断是否有简历
+    * */
+    @GetMapping("/resumeExist")
+    public String resumeExist(HttpSession session){
+        return userService.resumeExist(session);
     }
 }

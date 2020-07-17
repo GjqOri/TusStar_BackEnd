@@ -68,8 +68,7 @@ public class CompanyUserService {
                           String degree, String experience, String email, String contactPhone, String contactName,
                           int recruitingNumbers, String jobWelfare, String jobDesc, String jobContent, HttpSession session){
         String companyEmail = String.valueOf(session.getAttribute("companyEmail"));
-//        String name = companyUserMapper.selectNameByEmail(companyEmail);
-        String name = "帅强";
+        String name = companyUserMapper.selectNameByEmail(companyEmail);
         String postTime = dateFormat.format(new Date());
         int i = companyUserMapper.postJob(name, jobName, nature, type, workLocation, salary, degree, experience, email
                 , contactPhone, contactName, recruitingNumbers, jobWelfare, jobDesc, jobContent, postTime);
