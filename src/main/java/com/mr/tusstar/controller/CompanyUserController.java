@@ -4,6 +4,7 @@ import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.CompanyUserService;
+import com.mr.tusstar.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
@@ -21,6 +22,8 @@ public class CompanyUserController {
     private CompanyUserService companyUserService;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private MailService mailService;
     /*
     * 企业用户注册
     * */
@@ -38,6 +41,15 @@ public class CompanyUserController {
         }else {
             return "fail";
         }
+    }
+    /*
+     * 邮箱验证
+     * */
+    @GetMapping("/emailCode/{mail}")
+    public int emailCode(@PathVariable(name = "mail") String mail){
+        int code = (int) ((Math.random()*9+1)*100000);
+        mailService.sendSimpleEmail(code, mail);
+        return code;
     }
     /*
     * 企业登录
@@ -92,5 +104,12 @@ public class CompanyUserController {
     @GetMapping("/companyDetail/{id}")
     public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
         return commonService.comapnyDetail(id);
+    }
+    /*
+    * 查看某个公司曾经发布的岗位
+    * */
+    @GetMapping("/postedJobs/{name}")
+    public Job[] postedJobs(@PathVariable(value = "name") String name){
+        return commonService.companyPostedJobs(name);
     }
 }

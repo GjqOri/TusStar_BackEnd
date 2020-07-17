@@ -40,6 +40,12 @@ public class CommonService {
         return commonMapper.companyDetail(id);
     }
     /*
+     * 某个企业发布的工作
+     * */
+    public Job[] companyPostedJobs(String name){
+        return commonMapper.selectJobByName(name);
+    }
+    /*
     * 邮箱验证码
     * */
 }

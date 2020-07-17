@@ -24,4 +24,7 @@ public interface CommonMapper {
 
     @Select("SELECT * FROM companyinfo WHERE id=#{id}")
     CompanyInfo companyDetail(@Param("id") int id);
+
+    @Select("SELECT id, jobname, type, jobdesc, posttime FROM job WHERE name=#{name}")
+    Job[] selectJobByName(@Param("name") String name);
 }
