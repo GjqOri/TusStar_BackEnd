@@ -29,7 +29,7 @@ public class CompanyUserService {
                         String website, String password){
         String md5_password = MD5.getMD5(password);
         String registertime = dateFormat.format(new Date());
-        int register = companyUserMapper.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headquarters, website, md5_password, registertime);
+        int register = companyUserMapper.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headquarters, website, registertime);
         int insertCompanyUser = companyUserMapper.insertCompanyUser(email, md5_password, registertime);
         if (register == 1 && insertCompanyUser == 1){
             return 1;

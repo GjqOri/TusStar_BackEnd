@@ -1,5 +1,6 @@
 package com.mr.tusstar.service;
 
+import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.mapper.CommonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,18 @@ public class CommonService {
     * */
     public Job allInfo(int id){
         return commonMapper.allInfo(id);
+    }
+    /*
+    * 得到所有公司
+    * */
+    public CompanyInfo[] allCompanies(){
+        return commonMapper.allCompanies();
+    }
+    /*
+    * 得到某一个公司的详细信息
+    * */
+    public CompanyInfo comapnyDetail(int id){
+        return commonMapper.companyDetail(id);
     }
     /*
     * 邮箱验证码

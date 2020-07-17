@@ -1,5 +1,6 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.service.CommonService;
@@ -104,5 +105,19 @@ public class UserController {
     @GetMapping("/resumeExist")
     public String resumeExist(HttpSession session){
         return userService.resumeExist(session);
+    }
+    /*
+    * 得到公司列表
+    * */
+    @GetMapping("/getAllCompanies")
+    public CompanyInfo[] allCompanies(){
+        return commonService.allCompanies();
+    }
+    /*
+     * 查看某个公司详细信息
+     * */
+    @GetMapping("/companyDetail/{id}")
+    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
+        return commonService.comapnyDetail(id);
     }
 }
