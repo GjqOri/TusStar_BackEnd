@@ -27,4 +27,8 @@ public interface CommonMapper {
 
     @Select("SELECT id, jobname, type, jobdesc, posttime FROM job WHERE name=#{name}")
     Job[] selectJobByName(@Param("name") String name);
+
+    @Select("SELECT id, jobname, name, worklocation, nature, posttime FROM job WHERE IF(#{jobName}!='', jobname like "+ "'%"+"${jobName}"+"%'"+", '1=1') AND " +
+            "IF(#{workLocation}!='', worklocation like "+"'%"+"${workLocation}"+"%'"+", '1=1') AND IF(#{type}!='', type like "+"'%"+"${type}"+"%'"+", '1=1')")
+    Job[] searchJobs(@Param("jobName") String jobName, @Param("workLocation") String workLocation, @Param("type") String type);
 }

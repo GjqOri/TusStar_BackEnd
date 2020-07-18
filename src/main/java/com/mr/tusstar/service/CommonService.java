@@ -46,6 +46,10 @@ public class CommonService {
         return commonMapper.selectJobByName(name);
     }
     /*
-    * 邮箱验证码
+    * 搜索岗位名称、地点、分类
     * */
+    public Job[] searchJobs(String jobName, String workLocation, String type){
+        return commonMapper.searchJobs(jobName, workLocation, type);
+    }
+
 }

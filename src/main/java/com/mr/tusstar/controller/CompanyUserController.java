@@ -112,4 +112,11 @@ public class CompanyUserController {
     public Job[] postedJobs(@PathVariable(value = "name") String name){
         return commonService.companyPostedJobs(name);
     }
+    /*
+     * 搜索岗位
+     * */
+    @PostMapping("/searchJobs")
+    public Job[] searchJobs(String jobName, String workLocation, String type){
+        return commonService.searchJobs(jobName, workLocation, type);
+    }
 }
