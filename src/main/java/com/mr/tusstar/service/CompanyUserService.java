@@ -97,7 +97,7 @@ public class CompanyUserService {
         return companyUserMapper.selectIdByEmail(email);
     }
     /*
-    * 待处理申请
+    * 待处理申请和已经处理完的历史
     * */
     public Pending[] pending(HttpSession session){
         String companyName = (String) session.getAttribute("companyName");
@@ -144,4 +144,17 @@ public class CompanyUserService {
             return "fail";
         }
     }
+    /*
+    * 通知报到
+    * */
+    public String work(String phone, String jobName, HttpSession session){
+        String companyName = (String) session.getAttribute("companyName");
+        int work = companyUserMapper.updateUserApplyJobStatus("work", phone, jobName, companyName);
+        if (work == 1){
+            return "success";
+        }else {
+            return "fail";
+        }
+    }
+
 }
