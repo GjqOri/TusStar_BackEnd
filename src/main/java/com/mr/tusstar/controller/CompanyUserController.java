@@ -2,6 +2,8 @@ package com.mr.tusstar.controller;
 
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
+import com.mr.tusstar.entity.Pending;
+import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.CompanyUserService;
 import com.mr.tusstar.service.MailService;
@@ -56,16 +58,25 @@ public class CompanyUserController {
     * */
     @PostMapping("/login")
     @SessionScope
-    public String login(String email, String password, HttpSession session){
+    public String login(@RequestParam(value = "phone") String email, String password, HttpSession session){
         String query = companyUserService.queryByEmailAndPassword(email, password);
         if (query.equals("success")){
+            String name = companyUserService.selectNameByEmail(email);
             session.setAttribute("companyEmail", email);
+            session.setAttribute("companyName", name);
             return "success";
         }else if (query.equals("fail_password")){
             return "error_password";
         }else {
             return "error_ no companyuser";
         }
+    }
+    /*
+     * 返回登录名字
+     * */
+    @GetMapping("/getName")
+    public String getName(HttpSession session){
+        return (String) session.getAttribute("companyName");
     }
     /*
     * 企业发布岗位
@@ -118,5 +129,47 @@ public class CompanyUserController {
     @PostMapping("/searchJobs")
     public Job[] searchJobs(String jobName, String workLocation, String type){
         return commonService.searchJobs(jobName, workLocation, type);
+    }
+    /*
+     * 注销
+     * */
+    @GetMapping("/logOut")
+    public String logOut(HttpSession session){
+        return commonService.logOut(session);
+    }
+    /*
+    * 根据email返回id
+    * */
+    @GetMapping("/getId")
+    public int selectIdByEmail(HttpSession session){
+        return companyUserService.selectIdByEmail(session);
+    }
+    /*
+    * 待处理的申请
+    * */
+    @GetMapping("/getPendings")
+    public Pending[] pending(HttpSession session){
+        return companyUserService.pending(session);
+    }
+    /*
+    * 通知面试
+    * */
+    @GetMapping("/interview")
+    public String interview(String phone, String jobName, HttpSession session){
+        return companyUserService.interview(phone, jobName, session);
+    }
+    /*
+    * 查看简历
+    * */
+    @GetMapping("/viewResume/{phone}")
+    public Resume viewResume(@PathVariable(value = "phone") String phone){
+        return companyUserService.viewResume(phone);
+    }
+    /*
+    * 通知拒绝
+    * */
+    @GetMapping("/refuse")
+    public String refuse(String phone, String jobName, HttpSession session){
+        return companyUserService.refuse(phone, jobName, session);
     }
 }

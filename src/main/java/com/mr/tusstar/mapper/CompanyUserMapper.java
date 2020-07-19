@@ -1,9 +1,11 @@
 package com.mr.tusstar.mapper;
 
 import com.mr.tusstar.entity.CompanyUser;
+import com.mr.tusstar.entity.Pending;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -38,4 +40,13 @@ public interface CompanyUserMapper {
 
     @Select("SELECT name from companyinfo WHERE email=#{email} limit 1")
     String selectNameByEmail(@Param("email") String email);
+
+    @Select("SELECT id FROM companyuser WHERE email=#{email}")
+    int selectIdByEmail(@Param("email") String email);
+
+    @Select("SELECT phone, name, jobname, status FROM userapplyjob WHERE companyname=#{companyName}")
+    Pending[] pendingApplications(@Param("companyName") String companyName);
+
+    @Update("UPDATE userapplyjob SET status=#{status} WHERE phone=#{phone} AND jobname=#{jobName} AND companyname=#{companyName}")
+    int updateUserApplyJobStatus(@Param("status") String status, @Param("phone") String phone, @Param("jobName") String jobName, @Param("companyName") String companyName);
 }

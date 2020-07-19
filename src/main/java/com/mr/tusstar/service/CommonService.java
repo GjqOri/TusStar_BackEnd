@@ -6,6 +6,8 @@ import com.mr.tusstar.mapper.CommonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @author 董帅
  * @date 2020/7/16 - 22:56
@@ -50,6 +52,13 @@ public class CommonService {
     * */
     public Job[] searchJobs(String jobName, String workLocation, String type){
         return commonMapper.searchJobs(jobName, workLocation, type);
+    }
+    /*
+    * 注销
+    * */
+    public String logOut(HttpSession session){
+        session.invalidate();
+        return "success";
     }
 
 }
