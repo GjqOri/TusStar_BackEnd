@@ -2,6 +2,8 @@ package com.mr.tusstar.controller;
 
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
+import com.mr.tusstar.entity.Pending;
+import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.CompanyUserService;
 import com.mr.tusstar.service.MailService;
@@ -141,5 +143,33 @@ public class CompanyUserController {
     @GetMapping("/getId")
     public int selectIdByEmail(HttpSession session){
         return companyUserService.selectIdByEmail(session);
+    }
+    /*
+    * 待处理的申请
+    * */
+    @GetMapping("/getPendings")
+    public Pending[] pending(HttpSession session){
+        return companyUserService.pending(session);
+    }
+    /*
+    * 通知面试
+    * */
+    @GetMapping("/interview")
+    public String interview(String phone, String jobName, HttpSession session){
+        return companyUserService.interview(phone, jobName, session);
+    }
+    /*
+    * 查看简历
+    * */
+    @GetMapping("/viewResume/{phone}")
+    public Resume viewResume(@PathVariable(value = "phone") String phone){
+        return companyUserService.viewResume(phone);
+    }
+    /*
+    * 通知拒绝
+    * */
+    @GetMapping("/refuse")
+    public String refuse(String phone, String jobName, HttpSession session){
+        return companyUserService.refuse(phone, jobName, session);
     }
 }

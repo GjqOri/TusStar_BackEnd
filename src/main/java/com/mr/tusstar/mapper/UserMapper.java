@@ -3,6 +3,7 @@ package com.mr.tusstar.mapper;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.entity.User;
+import com.mr.tusstar.entity.UserApplyJob;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -45,15 +46,22 @@ public interface UserMapper {
     @Select("SELECT EXISTS(SELECT 1 FROM resume WHERE id = #{id})")
     int selectResumeById(@Param("id") int id);
 
-    @Insert("INSERT INTO userapplyjob VALUES(#{id}, #{phone}, #{name}, #{jobName}, #{companyName}, #{status}, #{postTime})")
-    int applyJob(@Param("id") int id, @Param("phone") String phone, @Param("name") String name, @Param("jobName") String jobName, @Param("companyName") String companyName, @Param("status") String status, @Param("postTime") String postTime);
+    @Insert("INSERT INTO userapplyjob(phone, name, jobid, jobname, companyname, worklocation, " +
+            "nature, status, posttime) VALUES(#{phone}, #{name},#{jobId}, #{jobName}, #{companyName}, #{workLocation}, #{nature}, #{status}, #{postTime})")
+    int applyJob(@Param("phone") String phone, @Param("name") String name, @Param("jobId") int jobId, @Param("jobName") String jobName, @Param("companyName") String companyName, @Param("workLocation") String workLocation, @Param("nature") String nature, @Param("status") String status, @Param("postTime") String postTime);
 
-    @Select("SELECT name, jobname FROM job WHERE id=#{id}")
-    Job selectCompanyNameAndJobNameById(@Param("id") int id);
+    @Select("SELECT id, name, jobname, worklocation, nature  FROM job WHERE id=#{id}")
+    Job selectJobInfoById(@Param("id") int id);
 
     @Select("SELECT name FROM user WHERE phone=#{phone}")
     String selectNameByPhone(@Param("phone") String phone);
 
-    @Select("SELECT EXISTS(SELECT 1 FROM userapplyjob WHERE id = #{id} and phone=#{phone})")
-    int ifApplyJob(@Param("id") int id, @Param("phone") String phone);
+    @Select("SELECT EXISTS(SELECT 1 FROM userapplyjob WHERE jobid = #{jobId} and phone=#{phone})")
+    int ifApplyJob(@Param("jobId") int jobId, @Param("phone") String phone);
+
+    @Select("SELECT id, phone, name, email FROM user WHERE phone=#{phone}")
+    User userInfo(@Param("phone") String phone);
+
+    @Select("SELECT jobid, jobname, companyname,worklocation, nature, status, posttime FROM userapplyjob WHERE phone=#{phone}")
+    UserApplyJob[] userAppliedJobs(@Param("phone") String phone);
 }

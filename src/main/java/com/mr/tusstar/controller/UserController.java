@@ -1,8 +1,6 @@
 package com.mr.tusstar.controller;
 
-import com.mr.tusstar.entity.CompanyInfo;
-import com.mr.tusstar.entity.Job;
-import com.mr.tusstar.entity.Resume;
+import com.mr.tusstar.entity.*;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.MailService;
 import com.mr.tusstar.service.UserService;
@@ -61,6 +59,7 @@ public class UserController {
             session.setAttribute("userId", id);
             session.setAttribute("userPhone", phone);
             session.setAttribute("userName", name);
+            session.setAttribute("userPhone", phone);
             return "success";
         }else if (select.equals("fail_password")){
             return "error_password";
@@ -159,9 +158,9 @@ public class UserController {
     /*
     * 判断用户是否已经申请了职位
     * */
-    @GetMapping("/ifApplyJob/{id}")
-    public String ifApplyJob(@PathVariable(value = "id") int id, HttpSession session){
-        return userService.ifApplyJob(id, session);
+    @GetMapping("/ifApplyJob/{jobId}")
+    public String ifApplyJob(@PathVariable(value = "jobId") int jobId, HttpSession session){
+        return userService.ifApplyJob(jobId, session);
     }
     /*
     * 搜索岗位
@@ -176,5 +175,19 @@ public class UserController {
     @GetMapping("/logOut")
     public String logOut(HttpSession session){
         return commonService.logOut(session);
+    }
+    /*
+    * 获取个人基本信息
+    * */
+    @GetMapping("/getUserInfo")
+    public User userInfo(HttpSession session){
+        return userService.userInfo(session);
+    }
+    /*
+     * 获取用户曾经投递过得岗位
+     * */
+    @GetMapping("/getUserAppliedJobs")
+    public UserApplyJob[] userAppliedJobs(HttpSession session){
+        return userService.userAppliedJobs(session);
     }
 }

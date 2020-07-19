@@ -1,7 +1,10 @@
 package com.mr.tusstar.service;
 
 import com.mr.tusstar.entity.CompanyUser;
+import com.mr.tusstar.entity.Pending;
+import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.mapper.CompanyUserMapper;
+import com.mr.tusstar.mapper.UserMapper;
 import com.mr.tusstar.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,8 @@ import java.util.Date;
 public class CompanyUserService {
     @Autowired
     private CompanyUserMapper companyUserMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
     /*
@@ -90,5 +95,53 @@ public class CompanyUserService {
     public int selectIdByEmail(HttpSession session){
         String email = (String) session.getAttribute("companyEmail");
         return companyUserMapper.selectIdByEmail(email);
+    }
+    /*
+    * 待处理申请
+    * */
+    public Pending[] pending(HttpSession session){
+        String companyName = (String) session.getAttribute("companyName");
+        Pending[] pendings = companyUserMapper.pendingApplications(companyName);
+        for (Pending pending : pendings) {
+            String userPhone = pending.getPhone();
+            int id = userMapper.selectIdByPhone(userPhone);
+            Resume resume = userMapper.selectAllById(id);
+            String school = resume.getSchool();
+            String major = resume.getMajor();
+            pending.setSchool(school);
+            pending.setMajor(major);
+        }
+        return pendings;
+    }
+    /*
+     * 通知面试
+     * */
+    public String interview(String phone, String jobName, HttpSession session){
+        String companyName = (String) session.getAttribute("companyName");
+        int interview = companyUserMapper.updateUserApplyJobStatus("interview", phone, jobName, companyName);
+        if (interview == 1){
+            return "success";
+        }else {
+            return "fail";
+        }
+    }
+    /*
+     * 查看简历
+     * */
+    public Resume viewResume(String phone){
+        int id = userMapper.selectIdByPhone(phone);
+        return userMapper.selectAllById(id);
+    }
+    /*
+     * 通知拒绝
+     * */
+    public String refuse(String phone, String jobName, HttpSession session){
+        String companyName = (String) session.getAttribute("companyName");
+        int refuse = companyUserMapper.updateUserApplyJobStatus("refuse", phone, jobName, companyName);
+        if (refuse == 1){
+            return "success";
+        }else {
+            return "fail";
+        }
     }
 }

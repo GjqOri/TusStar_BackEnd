@@ -16,8 +16,11 @@ public class UserApplyJob {
     private int id;
     private String phone;
     private String name;
+    private int jobId;
     private String jobName;
     private String companyName;
+    private String workLocation;
+    private String nature;
     private String status;
     private String postTime;
 }

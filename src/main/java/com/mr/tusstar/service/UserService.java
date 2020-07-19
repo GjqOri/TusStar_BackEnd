@@ -3,6 +3,7 @@ package com.mr.tusstar.service;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.entity.User;
+import com.mr.tusstar.entity.UserApplyJob;
 import com.mr.tusstar.mapper.UserMapper;
 import com.mr.tusstar.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import java.util.Date;
 public class UserService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CommonService commonService;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -120,14 +123,16 @@ public class UserService {
     /*
     * 用户申请岗位,此参数id为job 的id
     * */
-    public String applyJob(int id, HttpSession session){
-        Job job = userMapper.selectCompanyNameAndJobNameById(id);
+    public String applyJob(int jobId, HttpSession session){
+        Job job = userMapper.selectJobInfoById(jobId);
         String companyName = job.getName();
         String jobName = job.getJobName();
+        String workLocation = job.getWorkLocation();
+        String nature = job.getNature();
         String phone = (String) session.getAttribute("userPhone");
         String name = (String) session.getAttribute("userName");
         String postTime = dateFormat.format(new Date());
-        int i = userMapper.applyJob(id, phone, name, jobName, companyName, "wait", postTime);
+        int i = userMapper.applyJob(phone, name, jobId, jobName, companyName, workLocation, nature, "wait", postTime);
         if (i == 1){
             return "success";
         }else {
@@ -143,13 +148,27 @@ public class UserService {
     /*
     * 判断用户是否申请了职位
     * */
-    public String ifApplyJob(int id, HttpSession session){
+    public String ifApplyJob(int JobId, HttpSession session){
         String userPhone = (String) session.getAttribute("userPhone");
-        int i = userMapper.ifApplyJob(id, userPhone);
+        int i = userMapper.ifApplyJob(JobId, userPhone);
         if (i == 1){
             return "applied";
         }else {
             return "firstApply";
         }
+    }
+    /*
+    * 获取个人用户基础信息，如电话、姓名、邮箱
+    * */
+    public User userInfo(HttpSession session){
+        String phone = (String) session.getAttribute("userPhone");
+        return userMapper.userInfo(phone);
+    }
+    /*
+    * 获取用户曾经投递过得岗位
+    * */
+    public UserApplyJob[] userAppliedJobs(HttpSession session){
+        String phone = (String) session.getAttribute("userPhone");
+        return userMapper.userAppliedJobs(phone);
     }
 }
