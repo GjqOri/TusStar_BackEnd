@@ -15,6 +15,7 @@
 - lombok
 - persistence-api
 - spring-boot-starter-mail
+- Shiro
 
 
 
