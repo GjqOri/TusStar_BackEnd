@@ -8,6 +8,7 @@ import com.mr.tusstar.mapper.UserMapper;
 import com.mr.tusstar.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -54,11 +55,13 @@ public class UserService {
     * 判断注册时用户是否存在
     * */
     public String judgeUserExist(String phone){
-        User user = userMapper.selectUserByPhone(phone);
-        if (user != null){
+        Integer exist = userMapper.verifyUserExist(phone);
+        if (exist == null){
+            return "userNotExist";
+        }
+        else {
             return "userExist";
         }
-        return "userNotExist";
     }
     /*
     * 创建简历

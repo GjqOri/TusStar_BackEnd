@@ -64,4 +64,7 @@ public interface UserMapper {
 
     @Select("SELECT jobid, jobname, companyname,worklocation, nature, status, posttime FROM userapplyjob WHERE phone=#{phone}")
     UserApplyJob[] userAppliedJobs(@Param("phone") String phone);
+
+    @Select("SELECT 1 FROM user WHERE phone=#{phone} LIMIT 1")
+    Integer verifyUserExist(@Param("phone") String phone);
 }
