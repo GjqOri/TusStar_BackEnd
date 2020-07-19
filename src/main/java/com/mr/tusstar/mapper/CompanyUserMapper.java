@@ -38,4 +38,7 @@ public interface CompanyUserMapper {
 
     @Select("SELECT name from companyinfo WHERE email=#{email} limit 1")
     String selectNameByEmail(@Param("email") String email);
+
+    @Select("SELECT id FROM companyuser WHERE email=#{email}")
+    int selectIdByEmail(@Param("email") String email);
 }

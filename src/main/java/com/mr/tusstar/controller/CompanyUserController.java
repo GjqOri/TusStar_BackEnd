@@ -56,16 +56,25 @@ public class CompanyUserController {
     * */
     @PostMapping("/login")
     @SessionScope
-    public String login(String email, String password, HttpSession session){
+    public String login(@RequestParam(value = "phone") String email, String password, HttpSession session){
         String query = companyUserService.queryByEmailAndPassword(email, password);
         if (query.equals("success")){
+            String name = companyUserService.selectNameByEmail(email);
             session.setAttribute("companyEmail", email);
+            session.setAttribute("companyName", name);
             return "success";
         }else if (query.equals("fail_password")){
             return "error_password";
         }else {
             return "error_ no companyuser";
         }
+    }
+    /*
+     * 返回登录名字
+     * */
+    @GetMapping("/getName")
+    public String getName(HttpSession session){
+        return (String) session.getAttribute("companyName");
     }
     /*
     * 企业发布岗位
@@ -118,5 +127,19 @@ public class CompanyUserController {
     @PostMapping("/searchJobs")
     public Job[] searchJobs(String jobName, String workLocation, String type){
         return commonService.searchJobs(jobName, workLocation, type);
+    }
+    /*
+     * 注销
+     * */
+    @GetMapping("/logOut")
+    public String logOut(HttpSession session){
+        return commonService.logOut(session);
+    }
+    /*
+    * 根据email返回id
+    * */
+    @GetMapping("/getId")
+    public int selectIdByEmail(HttpSession session){
+        return companyUserService.selectIdByEmail(session);
     }
 }

@@ -69,6 +69,13 @@ public class UserController {
         }
     }
     /*
+    * 返回登录名字
+    * */
+    @GetMapping("/getName")
+    public String getName(HttpSession session){
+        return (String) session.getAttribute("userName");
+    }
+    /*
      * 查看岗位列表
      * */
     @GetMapping("/jobList")
@@ -162,5 +169,12 @@ public class UserController {
     @PostMapping("/searchJobs")
     public Job[] searchJobs(String jobName, String workLocation, String type){
         return commonService.searchJobs(jobName, workLocation, type);
+    }
+    /*
+    * 注销
+    * */
+    @GetMapping("/logOut")
+    public String logOut(HttpSession session){
+        return commonService.logOut(session);
     }
 }

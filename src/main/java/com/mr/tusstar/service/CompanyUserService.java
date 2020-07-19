@@ -78,4 +78,17 @@ public class CompanyUserService {
             return "fail";
         }
     }
+    /*
+    * 根据邮箱返回名字
+    * */
+    public String selectNameByEmail(String email){
+        return companyUserMapper.selectNameByEmail(email);
+    }
+    /*
+    * 根据email查询id
+    * */
+    public int selectIdByEmail(HttpSession session){
+        String email = (String) session.getAttribute("companyEmail");
+        return companyUserMapper.selectIdByEmail(email);
+    }
 }
