@@ -6,6 +6,7 @@ import com.mr.tusstar.service.MailService;
 import com.mr.tusstar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,6 +23,7 @@ public class UserController {
     private CommonService commonService;
     @Autowired
     private MailService mailService;
+
     /*
     * 注册功能
     * */
@@ -60,6 +62,7 @@ public class UserController {
             session.setAttribute("userPhone", phone);
             session.setAttribute("userName", name);
             session.setAttribute("userPhone", phone);
+            session.setAttribute("userType", "user");
             return "success";
         }else if (select.equals("fail_password")){
             return "error_password";
@@ -189,5 +192,20 @@ public class UserController {
     @GetMapping("/getUserAppliedJobs")
     public UserApplyJob[] userAppliedJobs(HttpSession session){
         return userService.userAppliedJobs(session);
+    }
+    /*
+    * 上传头像
+    * */
+    @PostMapping("/uploadHead")
+    public String uploadHead(MultipartFile file, HttpSession session){
+        return commonService.uploadHead(file, session);
+    }
+    /*
+    * 判断是否有头像，如果有直接返回名字，
+    * 没有的话就返回noHave
+    * */
+    @GetMapping("/headExist")
+    public String headExist(HttpSession session){
+        return commonService.headExist(session);
     }
 }

@@ -10,6 +10,7 @@ import com.mr.tusstar.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 
@@ -62,8 +63,11 @@ public class CompanyUserController {
         String query = companyUserService.queryByEmailAndPassword(email, password);
         if (query.equals("success")){
             String name = companyUserService.selectNameByEmail(email);
+            int id = companyUserService.selectIdByEmail(email);
             session.setAttribute("companyEmail", email);
             session.setAttribute("companyName", name);
+            session.setAttribute("userType", "company");
+            session.setAttribute("companyId", id);
             return "success";
         }else if (query.equals("fail_password")){
             return "error_password";
@@ -179,5 +183,33 @@ public class CompanyUserController {
     public String work(String phone, String jobName, HttpSession session){
         return companyUserService.work(phone, jobName, session);
     }
-
+    /*
+     * 上传头像
+     * */
+    @PostMapping("/uploadHead")
+    public String uploadHead(MultipartFile file, HttpSession session){
+        return commonService.uploadHead(file, session);
+    }
+    /*
+     * 判断是否有头像，如果有直接返回名字，
+     * 没有的话就返回noHave
+     * */
+    @GetMapping("/headExist")
+    public String headExist(HttpSession session){
+        return commonService.headExist(session);
+    }
+    /*
+    * 上传营业执照
+    * */
+    @PostMapping("/uploadLicense")
+    public String uploadLicense(MultipartFile file, HttpSession session){
+        return companyUserService.uploadLicense(file, session);
+    }
+    /*
+    * 判断是否有执照
+    * */
+    @GetMapping("/licenseExist")
+    public String licenseExist(HttpSession session){
+        return companyUserService.licenseExist(session);
+    }
 }
