@@ -156,5 +156,11 @@ public class CompanyUserService {
             return "fail";
         }
     }
+    /*
+    * 根据email查id
+    * */
+    public int selectIdByEmail(String email){
+        return companyUserMapper.selectIdByEmail(email);
+    }
 
 }
