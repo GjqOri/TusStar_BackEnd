@@ -106,7 +106,12 @@
             <artifactId>shiro-spring</artifactId>
             <version>1.5.3</version>
         </dependency>
-
+        <!-- json -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.62</version>
+        </dependency>
     </dependencies>
 
     <build>

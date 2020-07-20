@@ -60,4 +60,7 @@ public interface CommonMapper {
 
     @Update("UPDATE companyheadportrait SET path=#{path} WHERE id=#{id}")
     int updateHeadCom(@Param("id") int id, @Param("path") String path);
+
+    @Select("SELECT type FROM job")
+    String[] selectJobTypeNum();
 }

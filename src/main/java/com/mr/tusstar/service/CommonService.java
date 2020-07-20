@@ -128,4 +128,43 @@ public class CommonService {
         }
         return "noHave";
     }
+    /*
+    * 统计job类型个数
+    * */
+    public int[] selectJobTypeNum(){
+        String[] strings = commonMapper.selectJobTypeNum();
+        int[] jobNum = new int[9];
+        for (String string : strings) {
+            switch (string) {
+                case "技术":
+                    jobNum[0]++;
+                    break;
+                case "产品":
+                    jobNum[1]++;
+                    break;
+                case "设计":
+                    jobNum[2]++;
+                    break;
+                case "运营":
+                    jobNum[3]++;
+                    break;
+                case "销售":
+                    jobNum[4]++;
+                    break;
+                case "媒体":
+                    jobNum[5]++;
+                    break;
+                case "金融":
+                    jobNum[6]++;
+                    break;
+                case "教育":
+                    jobNum[7]++;
+                    break;
+                case "服务":
+                    jobNum[8]++;
+                    break;
+            }
+        }
+        return jobNum;
+    }
 }

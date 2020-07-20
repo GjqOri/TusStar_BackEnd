@@ -68,7 +68,7 @@ public class CompanyUserController {
             session.setAttribute("companyName", name);
             session.setAttribute("userType", "company");
             session.setAttribute("companyId", id);
-            return "success";
+            return String.valueOf(id);
         }else if (query.equals("fail_password")){
             return "error_password";
         }else {
@@ -211,5 +211,12 @@ public class CompanyUserController {
     @GetMapping("/licenseExist")
     public String licenseExist(HttpSession session){
         return companyUserService.licenseExist(session);
+    }
+    /*
+     * 统计职位分类个数
+     * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
     }
 }

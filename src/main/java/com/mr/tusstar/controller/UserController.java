@@ -63,7 +63,7 @@ public class UserController {
             session.setAttribute("userName", name);
             session.setAttribute("userPhone", phone);
             session.setAttribute("userType", "user");
-            return "success";
+            return String.valueOf(id);
         }else if (select.equals("fail_password")){
             return "error_password";
         }else {
@@ -207,5 +207,12 @@ public class UserController {
     @GetMapping("/headExist")
     public String headExist(HttpSession session){
         return commonService.headExist(session);
+    }
+    /*
+    * 统计职位分类个数
+    * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
     }
 }
