@@ -212,4 +212,11 @@ public class CompanyUserController {
     public String licenseExist(HttpSession session){
         return companyUserService.licenseExist(session);
     }
+    /*
+     * 统计职位分类个数
+     * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
+    }
 }

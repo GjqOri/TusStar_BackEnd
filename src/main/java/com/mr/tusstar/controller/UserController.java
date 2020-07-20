@@ -208,4 +208,11 @@ public class UserController {
     public String headExist(HttpSession session){
         return commonService.headExist(session);
     }
+    /*
+    * 统计职位分类个数
+    * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
+    }
 }
