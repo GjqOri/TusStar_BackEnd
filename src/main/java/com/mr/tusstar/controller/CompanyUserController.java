@@ -172,4 +172,12 @@ public class CompanyUserController {
     public String refuse(String phone, String jobName, HttpSession session){
         return companyUserService.refuse(phone, jobName, session);
     }
+    /*
+    * 通知报到
+    * */
+    @GetMapping("/work")
+    public String work(String phone, String jobName, HttpSession session){
+        return companyUserService.work(phone, jobName, session);
+    }
+
 }
