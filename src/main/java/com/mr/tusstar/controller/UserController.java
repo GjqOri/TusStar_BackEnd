@@ -63,7 +63,7 @@ public class UserController {
             session.setAttribute("userName", name);
             session.setAttribute("userPhone", phone);
             session.setAttribute("userType", "user");
-            return "success";
+            return String.valueOf(id);
         }else if (select.equals("fail_password")){
             return "error_password";
         }else {
