@@ -198,4 +198,18 @@ public class CompanyUserController {
     public String headExist(HttpSession session){
         return commonService.headExist(session);
     }
+    /*
+    * 上传营业执照
+    * */
+    @PostMapping("/uploadLicense")
+    public String uploadLicense(MultipartFile file, HttpSession session){
+        return companyUserService.uploadLicense(file, session);
+    }
+    /*
+    * 判断是否有执照
+    * */
+    @GetMapping("/licenseExist")
+    public String licenseExist(HttpSession session){
+        return companyUserService.licenseExist(session);
+    }
 }

@@ -49,4 +49,16 @@ public interface CompanyUserMapper {
 
     @Update("UPDATE userapplyjob SET status=#{status} WHERE phone=#{phone} AND jobname=#{jobName} AND companyname=#{companyName}")
     int updateUserApplyJobStatus(@Param("status") String status, @Param("phone") String phone, @Param("jobName") String jobName, @Param("companyName") String companyName);
+
+    @Select("SELECT EXISTS(SELECT 1 FROM companylicense WHERE id = #{id} limit 1) ")
+    int licenseExist(@Param("id") int id);
+
+    @Select("SELECT path FROM companylicense WHERE id=#{id}")
+    String selectPathById(@Param("id") int id);
+
+    @Insert("INSERT INTO companylicense VALUES(#{id}, #{path})")
+    int uploadLicense(@Param("id") int id, @Param("path") String path);
+
+    @Update("UPDATE companylicense SET path=#{path} WHERE id=#{id}")
+    int updateLicenseById(@Param("id") int id, @Param("path") String path);
 }
