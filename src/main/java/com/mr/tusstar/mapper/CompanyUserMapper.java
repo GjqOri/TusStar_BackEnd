@@ -25,8 +25,8 @@ public interface CompanyUserMapper {
     @Insert("INSERT INTO companyuser(email, password, registertime) VALUES(#{email}, #{password}, #{registertime})")
     int insertCompanyUser(@Param("email") String email, @Param("password") String password, @Param("registertime") String registertime);
 
-    @Select("SELECT id, email, password FROM companyuser WHERE email = #{email}")
-    CompanyUser selectByEmail(@Param("email") String email);
+    @Select("SELECT id, email, password FROM companyuser WHERE email = #{email} and password = #{password}")
+    CompanyUser selectByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
     @Select("SELECT EXISTS(SELECT 1 FROM companyinfo WHERE name = #{name} limit 1)")
     int selectByName(@Param("name") String name);

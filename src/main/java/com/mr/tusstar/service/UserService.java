@@ -39,7 +39,7 @@ public class UserService {
     /*
     * 根据phone和password进行登录判断
     * */
-    public String queryByPhoneAndPassword(String phone, String password){
+    /*public String queryByPhoneAndPassword(String phone, String password){
         String md5_password = MD5.getMD5(password);
         User user = userMapper.selectUserByPhone(phone);
         if (user != null){
@@ -50,7 +50,11 @@ public class UserService {
             }
         }
         return "fail_no user";
+    }*/
+    public User queryByPhoneAndPassword(String phone, String password) {
+        return userMapper.queryByPhoneAndPassword(phone, password);
     }
+
     /*
     * 判断注册时用户是否存在
     * */

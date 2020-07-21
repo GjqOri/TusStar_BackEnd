@@ -67,12 +67,6 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
-        <!-- JSON转换工具 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.51</version>
-        </dependency>
         <!-- StringUtils -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -106,7 +100,7 @@
             <artifactId>shiro-spring</artifactId>
             <version>1.5.3</version>
         </dependency>
-        <!-- json -->
+        <!-- fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>

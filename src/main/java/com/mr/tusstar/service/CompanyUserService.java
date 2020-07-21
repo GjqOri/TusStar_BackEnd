@@ -48,7 +48,7 @@ public class CompanyUserService {
     /*
     * 查询登录是否正确
     * */
-    public String queryByEmailAndPassword(String email, String password){
+    /*public String queryByEmailAndPassword(String email, String password){
         String md5_password = MD5.getMD5(password);
         CompanyUser companyUser = companyUserMapper.selectByEmail(email);
         if (companyUser != null){
@@ -59,7 +59,11 @@ public class CompanyUserService {
             }
         }
         return "fail_no companyuser";
+    }*/
+    public CompanyUser queryByEmailAndPassword(String email, String password) {
+        return companyUserMapper.selectByEmailAndPassword(email, password);
     }
+
     /*
     * 判断注册时企业用户是否存在
     * */

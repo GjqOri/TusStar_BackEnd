@@ -67,4 +67,7 @@ public interface UserMapper {
 
     @Select("SELECT 1 FROM user WHERE phone=#{phone} LIMIT 1")
     Integer verifyUserExist(@Param("phone") String phone);
+
+    @Select("select * from user where phone=#{phone} and password=#{password}")
+    User queryByPhoneAndPassword(@Param("phone") String phone, @Param("password") String password);
 }

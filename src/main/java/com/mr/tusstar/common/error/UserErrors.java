@@ -6,9 +6,10 @@ package com.mr.tusstar.common.error;
  */
 public enum UserErrors implements ServiceError {
 
-    NOAUTHC_ERROR(1001, "用户未认证"),
+    NOAUTHC_ERROR(1001, "用户未登录"),
     NOUSER_ERROR(1002,"登录失败,用户名或密码错误"),
-    NOPERM_ERROR(1003, "用户无访问该资源的权限"),
+    NOAUTHZ_ERROR(1003, "用户无访问该资源的权限"),
+    REPEATLOGIN_ERROR(1004, "重复登录"),
     ;
 
     private Integer code;

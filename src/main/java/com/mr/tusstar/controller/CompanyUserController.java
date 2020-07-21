@@ -1,5 +1,6 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.common.error.CompanyUserErrors;
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Pending;
@@ -7,9 +8,12 @@ import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.CompanyUserService;
 import com.mr.tusstar.service.MailService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -57,7 +61,7 @@ public class CompanyUserController {
     /*
     * 企业登录
     * */
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     @SessionScope
     public String login(@RequestParam(value = "phone") String email, String password, HttpSession session){
         String query = companyUserService.queryByEmailAndPassword(email, password);
@@ -74,7 +78,35 @@ public class CompanyUserController {
         }else {
             return "error_ no companyuser";
         }
+    }*/
+    @PostMapping(path = "/login")
+    public Object login(@RequestParam(value = "phone") String email, String password) {
+        // 1. 获取subject(实体)
+        Subject subject = SecurityUtils.getSubject();
+        // 2. 判断用户是否已经登录
+        if (!subject.isAuthenticated()) {
+            // 2.1 封装用户的登录数据
+            UsernamePasswordToken token = new UsernamePasswordToken(email, password);
+            // token.setRememberMe(true); 记住我功能
+            try {
+                subject.login(token);
+                return companyUserService.selectIdByEmail(email);
+            }
+            catch (AuthenticationException e) {
+                return CompanyUserErrors.NOUSER_ERROR;
+            }
+        }
+        else {
+            // 提示用户您已登录或注销并跳转到登录页面(二选一)
+            return CompanyUserErrors.REPEATLOGIN_ERROR;
+        }
     }
+    // 用于测试角色权限
+    /*@GetMapping(path = "/listRoles")
+    public String listRoles() {
+        return "企业用户拥有companyuser role";
+    }*/
+
     /*
      * 返回登录名字
      * */
