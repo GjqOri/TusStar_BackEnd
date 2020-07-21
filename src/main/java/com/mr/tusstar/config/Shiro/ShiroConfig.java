@@ -70,14 +70,20 @@ public class ShiroConfig {
         Map<String, String> filterMap = new LinkedHashMap<>();
 
         // 4.4 添加过滤器映射
-        // 从数据库中查
-        // filterMap.put("/user/listRoles","roles[user]"); 用于测试普通角色权限
-        // filterMap.put("/company/listRoles","roles[companyuser]"); // 用于测试企业角色权限
+        // 也可以从数据库中查
+        filterMap.put("/user/login","anon");
+        filterMap.put("/user/register","anon");
+        filterMap.put("/user/emailCode","anon");
+        filterMap.put("/company/login","anon");
+        filterMap.put("/company/register","anon");
+        filterMap.put("/company/emailCode","anon");
+        filterMap.put("/user/**","roles[user]");
+        filterMap.put("/company/**","roles[companyuser]");
         filterFactoryBean.setFilterChainDefinitionMap(filterMap);
 
-        // 4.5 设置: 没有认证时跳转到登录页面
+        // 4.5 设置: 没有认证时返回还未登录的信息
         filterFactoryBean.setLoginUrl("/validate/noLogin");
-        // 4.6 设置: 没有授权时跳转到未授权页面
+        // 4.6 设置: 没有权限时返回权限不够的信息
         filterFactoryBean.setUnauthorizedUrl("/validate/noAuthz");
 
         return filterFactoryBean;

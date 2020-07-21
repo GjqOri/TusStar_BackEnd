@@ -1,6 +1,7 @@
 package com.mr.tusstar.controller;
 
-import com.mr.tusstar.common.error.UserErrors;
+import com.mr.tusstar.common.error.LoginErrors;
+import com.mr.tusstar.common.error.RegisterErrors;
 import com.mr.tusstar.entity.*;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.MailService;
@@ -36,13 +37,13 @@ public class UserController {
     @PostMapping("/register")
     public Object register(String phone, String name, String email, String password){
         if (userService.judgeUserExist(phone).equals("userExist")){
-            return UserErrors.USEREXIST_ERROR;
+            return RegisterErrors.USEREXIST_ERROR;
         }else {
             int register = userService.register(phone, name, email, password);
             if (register == 1){
                 return "success";
             }else {
-                return UserErrors.REGISTER_ERROR;
+                return RegisterErrors.OTHER_ERROR;
             }
         }
     }
@@ -97,14 +98,9 @@ public class UserController {
             return userService.selectIdByPhone(phone);
         }
         catch (AuthenticationException e) {
-            return UserErrors.NOUSER_ERROR;
+            return LoginErrors.NOUSER_ERROR;
         }
     }
-    // 用于测试角色权限
-    /*@GetMapping(path = "/listRoles")
-    public String listRoles() {
-        return "用户拥有user role";
-    }*/
 
     /*
     * 返回登录名字l

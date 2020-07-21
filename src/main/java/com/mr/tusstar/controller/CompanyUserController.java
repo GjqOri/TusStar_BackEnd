@@ -1,7 +1,7 @@
 package com.mr.tusstar.controller;
 
-import com.mr.tusstar.common.error.CompanyUserErrors;
-import com.mr.tusstar.common.error.UserErrors;
+import com.mr.tusstar.common.error.LoginErrors;
+import com.mr.tusstar.common.error.RegisterErrors;
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Pending;
@@ -16,7 +16,6 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -43,13 +42,13 @@ public class CompanyUserController {
                            String introduction, String listed, String headQuarters,
                            String website, String password){
         if (companyUserService.judgeCompanyUserExist(name).equals("userExist")){
-            return CompanyUserErrors.USEREXIST_ERROR;
+            return RegisterErrors.USEREXIST_ERROR;
         }
         int register = companyUserService.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headQuarters, website, password);
         if (register == 1){
             return "success";
         }else {
-            return CompanyUserErrors.REGISTER_ERROR;
+            return RegisterErrors.OTHER_ERROR;
         }
     }
     /*
@@ -103,14 +102,9 @@ public class CompanyUserController {
             return companyUserService.selectIdByEmail(email);
         }
         catch (AuthenticationException e) {
-            return CompanyUserErrors.NOUSER_ERROR;
+            return LoginErrors.NOUSER_ERROR;
         }
     }
-    // 用于测试角色权限
-    /*@GetMapping(path = "/listRoles")
-    public String listRoles() {
-        return "企业用户拥有companyuser role";
-    }*/
 
     /*
      * 返回登录名字

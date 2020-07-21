@@ -8,6 +8,7 @@ public interface ServiceError {
 
     /**
      * 获取错误码
+     *
      * @return Integer
      */
     Integer getCode();

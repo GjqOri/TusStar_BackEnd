@@ -1,6 +1,7 @@
 package com.mr.tusstar.controller;
 
-import com.mr.tusstar.common.error.UserErrors;
+import com.mr.tusstar.common.error.AccessResourceErrors;
+import com.mr.tusstar.common.error.LoginErrors;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -14,12 +15,12 @@ public class PermsValidateController {
 
     @RequestMapping(path="/noLogin")
     public Object noLogin() {
-        return UserErrors.NOAUTHC_ERROR;
+        return LoginErrors.NOAUTHC_ERROR;
     }
 
     @RequestMapping(path="/noAuthz")
     public Object noAuth() {
-        return UserErrors.NOAUTHZ_ERROR;
+        return AccessResourceErrors.NOAUTHZ_ERROR;
     }
 
 }
