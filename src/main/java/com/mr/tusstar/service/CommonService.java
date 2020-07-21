@@ -3,6 +3,8 @@ package com.mr.tusstar.service;
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.mapper.CommonMapper;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,8 +62,9 @@ public class CommonService {
     /*
     * 注销
     * */
-    public String logOut(HttpSession session){
-        session.invalidate();
+    public String logOut(){
+        Session session = SecurityUtils.getSubject().getSession();
+        session.stop();
         return "success";
     }
     /*

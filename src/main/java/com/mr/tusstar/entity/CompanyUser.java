@@ -16,4 +16,5 @@ public class CompanyUser {
     private int id;
     private String email;
     private String password;
+    private String salt;
 }

@@ -6,9 +6,12 @@ package com.mr.tusstar.common.error;
  */
 public enum CompanyUserErrors implements ServiceError {
 
-    NOAUTHC_ERROR(2001, "用户还未认证"),
+    NOAUTHC_ERROR(2001, "用户未登录"),
     NOUSER_ERROR(2002,"登录失败,用户名或密码错误"),
-    NOPERM_ERROR(2003, "企业用户无访问该资源的权限"),
+    NOAUTHZ_ERROR(2003, "企业用户无访问该资源的权限"),
+    REPEATLOGIN_ERROR(2004, "重复登录"),
+    USEREXIST_ERROR(2005, "用户已存在"),
+    REGISTER_ERROR(2006, "注册失败,请稍后再试"),
     ;
 
     private Integer code;

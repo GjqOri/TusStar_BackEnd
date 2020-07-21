@@ -1,9 +1,15 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.common.error.UserErrors;
 import com.mr.tusstar.entity.*;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.MailService;
 import com.mr.tusstar.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Md5Hash;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,15 +34,15 @@ public class UserController {
     * 注册功能
     * */
     @PostMapping("/register")
-    public String register(String phone, String name, String email, String password){
+    public Object register(String phone, String name, String email, String password){
         if (userService.judgeUserExist(phone).equals("userExist")){
-            return "userExist";
+            return UserErrors.USEREXIST_ERROR;
         }else {
             int register = userService.register(phone, name, email, password);
             if (register == 1){
                 return "success";
             }else {
-                return "fail";
+                return UserErrors.REGISTER_ERROR;
             }
         }
     }
@@ -52,7 +58,7 @@ public class UserController {
     /*
     * 登录功能
     * */
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String login(String phone, String password, HttpSession session){
         String select = userService.queryByPhoneAndPassword(phone, password);
         if (select.equals("success")){
@@ -69,9 +75,39 @@ public class UserController {
         }else {
             return "error_no user";
         }
+    }*/
+    @PostMapping(path = "/login")
+    public Object login(@RequestParam("phone") String phone,@RequestParam("password") String password) {
+        // 1. 获取subject(实体)
+        Subject subject = SecurityUtils.getSubject();
+        // 2. 判断用户是否已经登录
+        if (subject.isAuthenticated()) {
+            // 如果用户已经登录,那么注销当前用户
+            logOut();
+        }
+        // 3. 查询该用户的随机盐
+        String salt = userService.querySaltByPhone(phone);
+        // 4. 求MD5加盐hash
+        password = new Md5Hash(password, salt, 2).toHex();
+        // 5. 封装用户的登录数据
+        UsernamePasswordToken token = new UsernamePasswordToken(phone, password);
+        // token.setRememberMe(true); 记住我功能
+        try {
+            subject.login(token);
+            return userService.selectIdByPhone(phone);
+        }
+        catch (AuthenticationException e) {
+            return UserErrors.NOUSER_ERROR;
+        }
     }
+    // 用于测试角色权限
+    /*@GetMapping(path = "/listRoles")
+    public String listRoles() {
+        return "用户拥有user role";
+    }*/
+
     /*
-    * 返回登录名字
+    * 返回登录名字l
     * */
     @GetMapping("/getName")
     public String getName(HttpSession session){
@@ -176,8 +212,8 @@ public class UserController {
     * 注销
     * */
     @GetMapping("/logOut")
-    public String logOut(HttpSession session){
-        return commonService.logOut(session);
+    public String logOut(){
+        return commonService.logOut();
     }
     /*
     * 获取个人基本信息

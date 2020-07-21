@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserMapper {
-    @Insert("INSERT INTO user(phone, name, email, password, registertime) VALUES(#{phone}, #{name}, #{email}, #{password}, #{registerTime})")
-    int register(@Param("phone") String phone, @Param("name") String name, @Param("email") String email, @Param("password") String password, @Param("registerTime") String registerTime);
+    @Insert("INSERT INTO user(phone, name, email, password, registertime, salt) VALUES(#{phone}, #{name}, #{email}, #{password}, #{registerTime}, #{salt})")
+    int register(@Param("phone") String phone, @Param("name") String name, @Param("email") String email, @Param("password") String password, @Param("registerTime") String registerTime, @Param("salt") String salt);
 
     @Select("SELECT id, phone, name, email, password FROM user WHERE phone = #{phone}")
     User selectUserByPhone(@Param("phone") String phone);
@@ -67,4 +67,10 @@ public interface UserMapper {
 
     @Select("SELECT 1 FROM user WHERE phone=#{phone} LIMIT 1")
     Integer verifyUserExist(@Param("phone") String phone);
+
+    @Select("select * from user where phone=#{phone} and password=#{password}")
+    User queryByPhoneAndPassword(@Param("phone") String phone, @Param("password") String password);
+
+    @Select("select salt from user where phone=#{phone}")
+    String selectSaltByPhone(@Param("phone") String phone);
 }
