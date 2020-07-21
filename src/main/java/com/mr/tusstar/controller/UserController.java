@@ -1,11 +1,17 @@
 package com.mr.tusstar.controller;
 
+import com.mr.tusstar.common.error.UserErrors;
 import com.mr.tusstar.entity.*;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.MailService;
 import com.mr.tusstar.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,6 +28,7 @@ public class UserController {
     private CommonService commonService;
     @Autowired
     private MailService mailService;
+
     /*
     * 注册功能
     * */
@@ -50,7 +57,7 @@ public class UserController {
     /*
     * 登录功能
     * */
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String login(String phone, String password, HttpSession session){
         String select = userService.queryByPhoneAndPassword(phone, password);
         if (select.equals("success")){
@@ -60,15 +67,44 @@ public class UserController {
             session.setAttribute("userPhone", phone);
             session.setAttribute("userName", name);
             session.setAttribute("userPhone", phone);
-            return "success";
+            session.setAttribute("userType", "user");
+            return String.valueOf(id);
         }else if (select.equals("fail_password")){
             return "error_password";
         }else {
             return "error_no user";
         }
+    }*/
+    @PostMapping(path = "/login")
+    public Object login(@RequestParam("phone") String phone,@RequestParam("password") String password) {
+        // 1. 获取subject(实体)
+        Subject subject = SecurityUtils.getSubject();
+        // 2. 判断用户是否已经登录
+        if (!subject.isAuthenticated()) {
+            // 2.1 封装用户的登录数据
+            UsernamePasswordToken token = new UsernamePasswordToken(phone, password);
+            // token.setRememberMe(true); 记住我功能
+            try {
+                subject.login(token);
+                return userService.selectIdByPhone(phone);
+            }
+            catch (AuthenticationException e) {
+                return UserErrors.NOUSER_ERROR;
+            }
+        }
+        else {
+            // 提示用户您已登录或注销并跳转到登录页面(二选一)
+            return UserErrors.REPEATLOGIN_ERROR;
+        }
     }
+    // 用于测试角色权限
+    /*@GetMapping(path = "/listRoles")
+    public String listRoles() {
+        return "用户拥有user role";
+    }*/
+
     /*
-    * 返回登录名字
+    * 返回登录名字l
     * */
     @GetMapping("/getName")
     public String getName(HttpSession session){
@@ -189,5 +225,27 @@ public class UserController {
     @GetMapping("/getUserAppliedJobs")
     public UserApplyJob[] userAppliedJobs(HttpSession session){
         return userService.userAppliedJobs(session);
+    }
+    /*
+    * 上传头像
+    * */
+    @PostMapping("/uploadHead")
+    public String uploadHead(MultipartFile file, HttpSession session){
+        return commonService.uploadHead(file, session);
+    }
+    /*
+    * 判断是否有头像，如果有直接返回名字，
+    * 没有的话就返回noHave
+    * */
+    @GetMapping("/headExist")
+    public String headExist(HttpSession session){
+        return commonService.headExist(session);
+    }
+    /*
+    * 统计职位分类个数
+    * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
     }
 }

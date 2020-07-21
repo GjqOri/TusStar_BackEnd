@@ -68,8 +68,18 @@ public class ShiroConfig {
         filterFactoryBean.setSecurityManager(defaultWebSecurityManager);
         // 4.3 添加 Shiro 的内置过滤器
         Map<String, String> filterMap = new LinkedHashMap<>();
+
         // 4.4 添加过滤器映射
+        // 从数据库中查
+        // filterMap.put("/user/listRoles","roles[user]"); 用于测试普通角色权限
+        // filterMap.put("/company/listRoles","roles[companyuser]"); // 用于测试企业角色权限
         filterFactoryBean.setFilterChainDefinitionMap(filterMap);
+
+        // 4.5 设置: 没有认证时跳转到登录页面
+        filterFactoryBean.setLoginUrl("/validate/noLogin");
+        // 4.6 设置: 没有授权时跳转到未授权页面
+        filterFactoryBean.setUnauthorizedUrl("/validate/noAuthz");
+
         return filterFactoryBean;
     }
 

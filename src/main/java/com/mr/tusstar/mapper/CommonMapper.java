@@ -2,8 +2,10 @@ package com.mr.tusstar.mapper;
 
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -34,4 +36,31 @@ public interface CommonMapper {
 
     @Select("SELECT id, jobname, name, worklocation, nature FROM job WHERE jobname=#{jobName} AND name=#{companyName}")
     Job mainInfoByJobNameAndCompanyName(@Param("jobName") String jobName, @Param("companyName") String companyName);
+
+    @Insert("INSERT INTO userheadportrait VALUES(#{id}, #{path})")
+    int uploadHeadUser(@Param("id") int id, @Param("path") String path);
+
+    @Insert("INSERT INTO companyheadportrait VALUES(#{id}, #{path})")
+    int uploadHeadCom(@Param("id") int id, @Param("path") String path);
+
+    @Select("SELECT EXISTS(SELECT 1 FROM userheadportrait WHERE id = #{id} limit 1)")
+    int headExistUser(@Param("id") int id);
+
+    @Select("SELECT EXISTS(SELECT 1 FROM companyheadportrait WHERE id = #{id} limit 1)")
+    int headExistCom(@Param("id") int id);
+
+    @Select("SELECT path FROM userheadportrait WHERE id=#{id}")
+    String selectPathByIdUser(@Param("id") int id);
+
+    @Select("SELECT path FROM companyheadportrait WHERE id=#{id}")
+    String selectPathByIdCom(@Param("id") int id);
+
+    @Update("UPDATE userheadportrait SET path=#{path} WHERE id=#{id}")
+    int updateHeadUser(@Param("id") int id, @Param("path") String path);
+
+    @Update("UPDATE companyheadportrait SET path=#{path} WHERE id=#{id}")
+    int updateHeadCom(@Param("id") int id, @Param("path") String path);
+
+    @Select("SELECT type FROM job")
+    String[] selectJobTypeNum();
 }

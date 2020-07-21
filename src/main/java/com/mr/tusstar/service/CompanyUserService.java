@@ -8,10 +8,14 @@ import com.mr.tusstar.mapper.UserMapper;
 import com.mr.tusstar.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author 董帅
@@ -44,7 +48,7 @@ public class CompanyUserService {
     /*
     * 查询登录是否正确
     * */
-    public String queryByEmailAndPassword(String email, String password){
+    /*public String queryByEmailAndPassword(String email, String password){
         String md5_password = MD5.getMD5(password);
         CompanyUser companyUser = companyUserMapper.selectByEmail(email);
         if (companyUser != null){
@@ -55,7 +59,11 @@ public class CompanyUserService {
             }
         }
         return "fail_no companyuser";
+    }*/
+    public CompanyUser queryByEmailAndPassword(String email, String password) {
+        return companyUserMapper.selectByEmailAndPassword(email, password);
     }
+
     /*
     * 判断注册时企业用户是否存在
     * */
@@ -156,5 +164,49 @@ public class CompanyUserService {
             return "fail";
         }
     }
-
+    /*
+    * 根据email查id
+    * */
+    public int selectIdByEmail(String email){
+        return companyUserMapper.selectIdByEmail(email);
+    }
+    /*
+    * 上传营业执照
+    * */
+    public String uploadLicense(MultipartFile file, HttpSession session){
+        String originalName = file.getOriginalFilename();
+        assert originalName != null;
+        String suffixName = originalName.substring(originalName.lastIndexOf("."));
+        String filePath = "/pic/upload/";
+//        String filePath = "F:/static/";
+        String newFileName = UUID.randomUUID() + suffixName;
+        File dest = new File(filePath + newFileName);
+        int id = (int) session.getAttribute("companyId");
+        if (licenseExist(session).equals("noHave")){
+            companyUserMapper.uploadLicense(id, newFileName);
+        }else {
+            String s = companyUserMapper.selectPathById(id);
+            File deleteFile = new File(filePath + s);
+            deleteFile.delete();
+            companyUserMapper.updateLicenseById(id, newFileName);
+        }
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "success";
+    }
+    /*
+    * 判断是否有执照
+    * */
+    public String licenseExist(HttpSession session){
+        int id = (int) session.getAttribute("companyId");
+        int i = companyUserMapper.licenseExist(id);
+        if (i == 1){
+            return companyUserMapper.selectPathById(id);
+        }else {
+            return "noHave";
+        }
+    }
 }
