@@ -158,7 +158,7 @@ public class CompanyUserController {
     /*
     * 通知面试
     * */
-    @GetMapping("/interview")
+    @PostMapping("/interview")
     public String interview(String phone, String jobName, HttpSession session){
         return companyUserService.interview(phone, jobName, session);
     }
@@ -172,14 +172,14 @@ public class CompanyUserController {
     /*
     * 通知拒绝
     * */
-    @GetMapping("/refuse")
+    @PostMapping("/refuse")
     public String refuse(String phone, String jobName, HttpSession session){
         return companyUserService.refuse(phone, jobName, session);
     }
     /*
     * 通知报到
     * */
-    @GetMapping("/work")
+    @PostMapping("/work")
     public String work(String phone, String jobName, HttpSession session){
         return companyUserService.work(phone, jobName, session);
     }
