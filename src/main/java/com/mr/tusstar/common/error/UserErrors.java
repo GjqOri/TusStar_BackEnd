@@ -10,6 +10,8 @@ public enum UserErrors implements ServiceError {
     NOUSER_ERROR(1002,"登录失败,用户名或密码错误"),
     NOAUTHZ_ERROR(1003, "用户无访问该资源的权限"),
     REPEATLOGIN_ERROR(1004, "重复登录"),
+    USEREXIST_ERROR(1005, "用户已存在"),
+    REGISTER_ERROR(1006, "注册失败,请稍后再试"),
     ;
 
     private Integer code;

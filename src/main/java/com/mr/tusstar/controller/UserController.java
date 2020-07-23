@@ -8,6 +8,7 @@ import com.mr.tusstar.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,15 +34,15 @@ public class UserController {
     * 注册功能
     * */
     @PostMapping("/register")
-    public String register(String phone, String name, String email, String password){
+    public Object register(String phone, String name, String email, String password){
         if (userService.judgeUserExist(phone).equals("userExist")){
-            return "userExist";
+            return UserErrors.USEREXIST_ERROR;
         }else {
             int register = userService.register(phone, name, email, password);
             if (register == 1){
                 return "success";
             }else {
-                return "fail";
+                return UserErrors.REGISTER_ERROR;
             }
         }
     }
@@ -80,21 +81,23 @@ public class UserController {
         // 1. 获取subject(实体)
         Subject subject = SecurityUtils.getSubject();
         // 2. 判断用户是否已经登录
-        if (!subject.isAuthenticated()) {
-            // 2.1 封装用户的登录数据
-            UsernamePasswordToken token = new UsernamePasswordToken(phone, password);
-            // token.setRememberMe(true); 记住我功能
-            try {
-                subject.login(token);
-                return userService.selectIdByPhone(phone);
-            }
-            catch (AuthenticationException e) {
-                return UserErrors.NOUSER_ERROR;
-            }
+        if (subject.isAuthenticated()) {
+            // 如果用户已经登录,那么注销当前用户
+            logOut();
         }
-        else {
-            // 提示用户您已登录或注销并跳转到登录页面(二选一)
-            return UserErrors.REPEATLOGIN_ERROR;
+        // 3. 查询该用户的随机盐
+        String salt = userService.querySaltByPhone(phone);
+        // 4. 求MD5加盐hash
+        password = new Md5Hash(password, salt, 2).toHex();
+        // 5. 封装用户的登录数据
+        UsernamePasswordToken token = new UsernamePasswordToken(phone, password);
+        // token.setRememberMe(true); 记住我功能
+        try {
+            subject.login(token);
+            return userService.selectIdByPhone(phone);
+        }
+        catch (AuthenticationException e) {
+            return UserErrors.NOUSER_ERROR;
         }
     }
     // 用于测试角色权限
@@ -209,8 +212,8 @@ public class UserController {
     * 注销
     * */
     @GetMapping("/logOut")
-    public String logOut(HttpSession session){
-        return commonService.logOut(session);
+    public String logOut(){
+        return commonService.logOut();
     }
     /*
     * 获取个人基本信息

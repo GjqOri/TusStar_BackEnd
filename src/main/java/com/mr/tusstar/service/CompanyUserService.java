@@ -5,7 +5,7 @@ import com.mr.tusstar.entity.Pending;
 import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.mapper.CompanyUserMapper;
 import com.mr.tusstar.mapper.UserMapper;
-import com.mr.tusstar.utils.MD5;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,10 +36,12 @@ public class CompanyUserService {
                         int fund, String industry, String phone, String email,
                         String introduction, String listed, String headquarters,
                         String website, String password){
-        String md5_password = MD5.getMD5(password);
+        String salt = UUID.randomUUID().toString().replaceAll("-", "");
+        // 第一个参数是要加密的字符串,第二个参数是随机盐,第三个参数是求hash的次数(可修改为其它整数,这里修改的话对应的controller的login也要修改),最后将结果转换为16进制返回(长度为32位)
+        String md5_password = new Md5Hash(password, salt, 2).toHex();
         String registertime = dateFormat.format(new Date());
         int register = companyUserMapper.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headquarters, website, registertime);
-        int insertCompanyUser = companyUserMapper.insertCompanyUser(email, md5_password, registertime);
+        int insertCompanyUser = companyUserMapper.insertCompanyUser(email, md5_password, registertime, salt);
         if (register == 1 && insertCompanyUser == 1){
             return 1;
         }
@@ -104,6 +106,10 @@ public class CompanyUserService {
         String email = (String) session.getAttribute("companyEmail");
         return companyUserMapper.selectIdByEmail(email);
     }
+    public String querySaltByEmail(String email) {
+        return companyUserMapper.selectSaltByEmail(email);
+    }
+
     /*
     * 待处理申请和已经处理完的历史
     * */

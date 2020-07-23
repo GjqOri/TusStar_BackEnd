@@ -5,14 +5,14 @@ import com.mr.tusstar.entity.Resume;
 import com.mr.tusstar.entity.User;
 import com.mr.tusstar.entity.UserApplyJob;
 import com.mr.tusstar.mapper.UserMapper;
-import com.mr.tusstar.utils.MD5;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -33,8 +33,11 @@ public class UserService {
     * */
     public int register(String phone, String name, String email, String password){
         String registerTime = dateFormat.format(new Date());
-        String md5_password = MD5.getMD5(password);
-        return userMapper.register(phone, name, email, md5_password, registerTime);
+        String salt = UUID.randomUUID().toString().replaceAll("-", "");
+        // 第一个参数是要加密的字符串,第二个参数是随机盐,第三个参数是求hash的次数(可修改为其它整数,这里修改的话对应的controller的login也要修改),最后将结果转换为16进制返回(长度为32位)
+        String md5_password = new Md5Hash(password, salt, 2).toHex();
+        // String md5_password = MD5.getMD5(password);
+        return userMapper.register(phone, name, email, md5_password, registerTime, salt);
     }
     /*
     * 根据phone和password进行登录判断
@@ -53,6 +56,9 @@ public class UserService {
     }*/
     public User queryByPhoneAndPassword(String phone, String password) {
         return userMapper.queryByPhoneAndPassword(phone, password);
+    }
+    public String querySaltByPhone(String phone) {
+        return userMapper.selectSaltByPhone(phone);
     }
 
     /*

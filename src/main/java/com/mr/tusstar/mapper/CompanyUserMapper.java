@@ -22,8 +22,8 @@ public interface CompanyUserMapper {
                  @Param("introduction") String introduction, @Param("listed") String listed, @Param("headquarters") String headquarters,
                  @Param("website") String website, @Param("registertime") String registertime);
 
-    @Insert("INSERT INTO companyuser(email, password, registertime) VALUES(#{email}, #{password}, #{registertime})")
-    int insertCompanyUser(@Param("email") String email, @Param("password") String password, @Param("registertime") String registertime);
+    @Insert("INSERT INTO companyuser(email, password, registertime, salt) VALUES(#{email}, #{password}, #{registertime}, #{salt})")
+    int insertCompanyUser(@Param("email") String email, @Param("password") String password, @Param("registertime") String registertime, @Param("salt") String salt);
 
     @Select("SELECT id, email, password FROM companyuser WHERE email = #{email} and password = #{password}")
     CompanyUser selectByEmailAndPassword(@Param("email") String email, @Param("password") String password);
@@ -43,6 +43,9 @@ public interface CompanyUserMapper {
 
     @Select("SELECT id FROM companyuser WHERE email=#{email}")
     int selectIdByEmail(@Param("email") String email);
+
+    @Select("select salt from companyuser where email=#{email}")
+    String selectSaltByEmail(@Param("email") String email);
 
     @Select("SELECT phone, name, jobname, status FROM userapplyjob WHERE companyname=#{companyName}")
     Pending[] pendingApplications(@Param("companyName") String companyName);

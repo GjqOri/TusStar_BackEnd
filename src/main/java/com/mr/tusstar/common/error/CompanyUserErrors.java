@@ -10,6 +10,8 @@ public enum CompanyUserErrors implements ServiceError {
     NOUSER_ERROR(2002,"登录失败,用户名或密码错误"),
     NOAUTHZ_ERROR(2003, "企业用户无访问该资源的权限"),
     REPEATLOGIN_ERROR(2004, "重复登录"),
+    USEREXIST_ERROR(2005, "用户已存在"),
+    REGISTER_ERROR(2006, "注册失败,请稍后再试"),
     ;
 
     private Integer code;

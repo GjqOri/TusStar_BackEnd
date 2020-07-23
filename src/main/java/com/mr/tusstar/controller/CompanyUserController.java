@@ -11,6 +11,7 @@ import com.mr.tusstar.service.MailService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,18 +36,18 @@ public class CompanyUserController {
     * 企业用户注册
     * */
     @PostMapping("/register")
-    public String register(String name, String type, String scale, String area,
+    public Object register(String name, String type, String scale, String area,
                            int fund, String industry, String phone, String email,
                            String introduction, String listed, String headQuarters,
                            String website, String password){
         if (companyUserService.judgeCompanyUserExist(name).equals("userExist")){
-            return "userExist";
+            return CompanyUserErrors.USEREXIST_ERROR;
         }
         int register = companyUserService.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headQuarters, website, password);
         if (register == 1){
             return "success";
         }else {
-            return "fail";
+            return CompanyUserErrors.REGISTER_ERROR;
         }
     }
     /*
@@ -84,21 +85,23 @@ public class CompanyUserController {
         // 1. 获取subject(实体)
         Subject subject = SecurityUtils.getSubject();
         // 2. 判断用户是否已经登录
-        if (!subject.isAuthenticated()) {
-            // 2.1 封装用户的登录数据
-            UsernamePasswordToken token = new UsernamePasswordToken(email, password);
-            // token.setRememberMe(true); 记住我功能
-            try {
-                subject.login(token);
-                return companyUserService.selectIdByEmail(email);
-            }
-            catch (AuthenticationException e) {
-                return CompanyUserErrors.NOUSER_ERROR;
-            }
+        if (subject.isAuthenticated()) {
+            // 如果用户已经登录,那么注销当前用户
+            logOut();
         }
-        else {
-            // 提示用户您已登录或注销并跳转到登录页面(二选一)
-            return CompanyUserErrors.REPEATLOGIN_ERROR;
+        // 3. 查询该用户的随机盐
+        String salt = companyUserService.querySaltByEmail(email);
+        // 4. 求MD5加盐hash
+        password = new Md5Hash(password, salt, 2).toHex();
+        // 5. 封装用户的登录数据
+        UsernamePasswordToken token = new UsernamePasswordToken(email, password);
+        // token.setRememberMe(true); 记住我功能
+        try {
+            subject.login(token);
+            return companyUserService.selectIdByEmail(email);
+        }
+        catch (AuthenticationException e) {
+            return CompanyUserErrors.NOUSER_ERROR;
         }
     }
     // 用于测试角色权限
@@ -170,8 +173,8 @@ public class CompanyUserController {
      * 注销
      * */
     @GetMapping("/logOut")
-    public String logOut(HttpSession session){
-        return commonService.logOut(session);
+    public String logOut(){
+        return commonService.logOut();
     }
     /*
     * 根据email返回id
