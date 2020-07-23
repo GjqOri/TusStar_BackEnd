@@ -1,6 +1,7 @@
 package com.mr.tusstar.controller;
 
-import com.mr.tusstar.common.error.CompanyUserErrors;
+import com.mr.tusstar.common.error.LoginErrors;
+import com.mr.tusstar.common.error.RegisterErrors;
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.entity.Pending;
@@ -41,13 +42,13 @@ public class CompanyUserController {
                            String introduction, String listed, String headQuarters,
                            String website, String password){
         if (companyUserService.judgeCompanyUserExist(name).equals("userExist")){
-            return CompanyUserErrors.USEREXIST_ERROR;
+            return RegisterErrors.USEREXIST_ERROR;
         }
         int register = companyUserService.register(name, type, scale, area, fund, industry, phone, email, introduction, listed, headQuarters, website, password);
         if (register == 1){
             return "success";
         }else {
-            return CompanyUserErrors.REGISTER_ERROR;
+            return RegisterErrors.OTHER_ERROR;
         }
     }
     /*
@@ -59,6 +60,57 @@ public class CompanyUserController {
         mailService.sendSimpleEmail(code, mail);
         return code;
     }
+    /*
+     * 查看岗位列表
+     * */
+    @GetMapping("/jobList")
+    public Job[] jobList(){
+        return commonService.mainInfo();
+    }
+    /*
+     * 查看某个岗位的详细信息
+     * */
+    @GetMapping("/job/{id}")
+    public Job jobDetail(@PathVariable(value = "id") int id){
+        return commonService.allInfo(id);
+    }
+    /*
+     * 公司列表
+     * */
+    @GetMapping("/getAllCompanies")
+    public CompanyInfo[] allCompanies(){
+        return commonService.allCompanies();
+    }
+    /*
+     * 查看某个公司详细信息
+     * */
+    @GetMapping("/companyDetail/{id}")
+    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
+        return commonService.comapnyDetail(id);
+    }
+    /*
+     * 查看某个公司曾经发布的岗位
+     * */
+    @GetMapping("/postedJobs/{name}")
+    public Job[] postedJobs(@PathVariable(value = "name") String name){
+        return commonService.companyPostedJobs(name);
+    }
+    /*
+     * 搜索岗位
+     * */
+    @PostMapping("/searchJobs")
+    public Job[] searchJobs(String jobName, String workLocation, String type){
+        return commonService.searchJobs(jobName, workLocation, type);
+    }
+    /*
+     * 统计职位分类个数
+     * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
+    }
+    
+
     /*
     * 企业登录
     * */
@@ -101,14 +153,9 @@ public class CompanyUserController {
             return companyUserService.selectIdByEmail(email);
         }
         catch (AuthenticationException e) {
-            return CompanyUserErrors.NOUSER_ERROR;
+            return LoginErrors.NOUSER_ERROR;
         }
     }
-    // 用于测试角色权限
-    /*@GetMapping(path = "/listRoles")
-    public String listRoles() {
-        return "企业用户拥有companyuser role";
-    }*/
 
     /*
      * 返回登录名字
@@ -126,48 +173,6 @@ public class CompanyUserController {
                           int recruitingNumbers, String jobWelfare, String jobDesc, String jobContent, HttpSession session){
         return companyUserService.postJob(jobName, nature, type, workLocation, salary,
                 degree, experience, email, contactPhone, contactName, recruitingNumbers, jobWelfare, jobDesc, jobContent, session);
-    }
-    /*
-     * 查看岗位列表
-     * */
-    @GetMapping("/jobList")
-    public Job[] jobList(){
-        return commonService.mainInfo();
-    }
-    /*
-     * 查看某个岗位的详细信息
-     * */
-    @GetMapping("/job/{id}")
-    public Job jobDetail(@PathVariable(value = "id") int id){
-        return commonService.allInfo(id);
-    }
-    /*
-    * 公司列表
-    * */
-    @GetMapping("/getAllCompanies")
-    public CompanyInfo[] allCompanies(){
-        return commonService.allCompanies();
-    }
-    /*
-    * 查看某个公司详细信息
-    * */
-    @GetMapping("/companyDetail/{id}")
-    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
-        return commonService.comapnyDetail(id);
-    }
-    /*
-    * 查看某个公司曾经发布的岗位
-    * */
-    @GetMapping("/postedJobs/{name}")
-    public Job[] postedJobs(@PathVariable(value = "name") String name){
-        return commonService.companyPostedJobs(name);
-    }
-    /*
-     * 搜索岗位
-     * */
-    @PostMapping("/searchJobs")
-    public Job[] searchJobs(String jobName, String workLocation, String type){
-        return commonService.searchJobs(jobName, workLocation, type);
     }
     /*
      * 注销
@@ -246,12 +251,5 @@ public class CompanyUserController {
     @GetMapping("/licenseExist")
     public String licenseExist(HttpSession session){
         return companyUserService.licenseExist(session);
-    }
-    /*
-     * 统计职位分类个数
-     * */
-    @GetMapping("/getJobTypeNum")
-    public int[] selectJobTypeNum(){
-        return commonService.selectJobTypeNum();
     }
 }

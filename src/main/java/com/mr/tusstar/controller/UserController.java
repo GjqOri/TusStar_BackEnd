@@ -1,6 +1,7 @@
 package com.mr.tusstar.controller;
 
-import com.mr.tusstar.common.error.UserErrors;
+import com.mr.tusstar.common.error.LoginErrors;
+import com.mr.tusstar.common.error.RegisterErrors;
 import com.mr.tusstar.entity.*;
 import com.mr.tusstar.service.CommonService;
 import com.mr.tusstar.service.MailService;
@@ -36,13 +37,13 @@ public class UserController {
     @PostMapping("/register")
     public Object register(String phone, String name, String email, String password){
         if (userService.judgeUserExist(phone).equals("userExist")){
-            return UserErrors.USEREXIST_ERROR;
+            return RegisterErrors.USEREXIST_ERROR;
         }else {
             int register = userService.register(phone, name, email, password);
             if (register == 1){
                 return "success";
             }else {
-                return UserErrors.REGISTER_ERROR;
+                return RegisterErrors.OTHER_ERROR;
             }
         }
     }
@@ -55,6 +56,50 @@ public class UserController {
         mailService.sendSimpleEmail(code, mail);
         return code;
     }
+    /*
+     * 查看岗位列表
+     * */
+    @GetMapping("/jobList")
+    public Job[] jobList(){
+        return commonService.mainInfo();
+    }
+    /*
+     * 搜索岗位
+     * */
+    @PostMapping("/searchJobs")
+    public Job[] searchJobs(String jobName, String workLocation, String type){
+        return commonService.searchJobs(jobName, workLocation, type);
+    }
+    /*
+     * 得到公司列表
+     * */
+    @GetMapping("/getAllCompanies")
+    public CompanyInfo[] allCompanies(){
+        return commonService.allCompanies();
+    }
+    /*
+     * 统计职位分类个数
+     * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
+    }
+    /*
+     * 查看某个公司详细信息
+     * */
+    @GetMapping("/companyDetail/{id}")
+    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
+        return commonService.comapnyDetail(id);
+    }
+    /*
+     * 查看某个公司曾经发布的岗位
+     * */
+    @GetMapping("/postedJobs/{name}")
+    public Job[] postedJobs(@PathVariable(value = "name") String name){
+        return commonService.companyPostedJobs(name);
+    }
+
+
     /*
     * 登录功能
     * */
@@ -97,28 +142,15 @@ public class UserController {
             return userService.selectIdByPhone(phone);
         }
         catch (AuthenticationException e) {
-            return UserErrors.NOUSER_ERROR;
+            return LoginErrors.NOUSER_ERROR;
         }
     }
-    // 用于测试角色权限
-    /*@GetMapping(path = "/listRoles")
-    public String listRoles() {
-        return "用户拥有user role";
-    }*/
-
     /*
     * 返回登录名字l
     * */
     @GetMapping("/getName")
     public String getName(HttpSession session){
         return (String) session.getAttribute("userName");
-    }
-    /*
-     * 查看岗位列表
-     * */
-    @GetMapping("/jobList")
-    public Job[] jobList(){
-        return commonService.mainInfo();
     }
     /*
     * 查看某个岗位的详细信息
@@ -128,7 +160,7 @@ public class UserController {
         return commonService.allInfo(id);
     }
     /*
-    * 创建简历
+    * 创建简历import crypto from "crypto";
     * */
     @PostMapping("/createResume")
     public String createResume(String name, String degree, String birth, String sex,
@@ -167,27 +199,6 @@ public class UserController {
         return userService.resumeExist(session);
     }
     /*
-    * 得到公司列表
-    * */
-    @GetMapping("/getAllCompanies")
-    public CompanyInfo[] allCompanies(){
-        return commonService.allCompanies();
-    }
-    /*
-     * 查看某个公司详细信息
-     * */
-    @GetMapping("/companyDetail/{id}")
-    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
-        return commonService.comapnyDetail(id);
-    }
-    /*
-     * 查看某个公司曾经发布的岗位
-     * */
-    @GetMapping("/postedJobs/{name}")
-    public Job[] postedJobs(@PathVariable(value = "name") String name){
-        return commonService.companyPostedJobs(name);
-    }
-    /*
     * 用户申请岗位
     * */
     @PostMapping("/applyJob/{id}")
@@ -200,13 +211,6 @@ public class UserController {
     @GetMapping("/ifApplyJob/{jobId}")
     public String ifApplyJob(@PathVariable(value = "jobId") int jobId, HttpSession session){
         return userService.ifApplyJob(jobId, session);
-    }
-    /*
-    * 搜索岗位
-    * */
-    @PostMapping("/searchJobs")
-    public Job[] searchJobs(String jobName, String workLocation, String type){
-        return commonService.searchJobs(jobName, workLocation, type);
     }
     /*
     * 注销
@@ -243,12 +247,5 @@ public class UserController {
     @GetMapping("/headExist")
     public String headExist(HttpSession session){
         return commonService.headExist(session);
-    }
-    /*
-    * 统计职位分类个数
-    * */
-    @GetMapping("/getJobTypeNum")
-    public int[] selectJobTypeNum(){
-        return commonService.selectJobTypeNum();
     }
 }
