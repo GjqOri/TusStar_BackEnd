@@ -63,4 +63,13 @@ public interface CommonMapper {
 
     @Select("SELECT type FROM job")
     String[] selectJobTypeNum();
+
+    @Select("SELECT count(*) FROM job")
+    int jobPostedNum();
+    @Select("SELECT count(*) FROM userapplyjob")
+    int jobFiledNum();
+    @Select("SELECT count(*) FROM companyuser")
+    int companyNum();
+    @Select("SELECT count(*) FROM user")
+    int userNum();
 }

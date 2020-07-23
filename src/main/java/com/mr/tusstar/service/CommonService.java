@@ -3,6 +3,7 @@ package com.mr.tusstar.service;
 import com.mr.tusstar.entity.CompanyInfo;
 import com.mr.tusstar.entity.Job;
 import com.mr.tusstar.mapper.CommonMapper;
+import com.mr.tusstar.mapper.CompanyUserMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class CommonService {
 
     @Autowired
     private CommonMapper commonMapper;
+    @Autowired
+    private CompanyUserMapper companyUserMapper;
     /*
     * 岗位列表的主要信息
     * */
@@ -169,5 +172,23 @@ public class CommonService {
             }
         }
         return jobNum;
+    }
+    /*
+     * 在岗位详情得到公司的头像
+     * */
+    public String getHeadFromJobDetail(String name){
+        int i = companyUserMapper.selectIdByName(name);
+        return commonMapper.selectPathByIdCom(i);
+    }
+    /*
+    * 统计主页最下面的相应个数
+    * */
+    public int[] indexCount(){
+        int[] count = new int[4];
+        count[0] = commonMapper.jobPostedNum();
+        count[1] = commonMapper.jobFiledNum();
+        count[2] = commonMapper.companyNum();
+        count[3] = commonMapper.userNum() + count[2];
+        return count;
     }
 }

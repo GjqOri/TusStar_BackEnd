@@ -64,4 +64,7 @@ public interface CompanyUserMapper {
 
     @Update("UPDATE companylicense SET path=#{path} WHERE id=#{id}")
     int updateLicenseById(@Param("id") int id, @Param("path") String path);
+
+    @Select("SELECT id FROM companyinfo WHERE name=#{name}")
+    int selectIdByName(@Param("name") String name);
 }
