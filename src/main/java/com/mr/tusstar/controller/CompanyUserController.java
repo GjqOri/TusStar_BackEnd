@@ -248,4 +248,11 @@ public class CompanyUserController {
     public int[] indexCount(){
         return commonService.indexCount();
     }
+    /*
+     * 公司查看学历简历时的头像
+     * */
+    @GetMapping("/viewHead/{phone}")
+    public String viewHead(@PathVariable(value = "phone") String phone){
+        return companyUserService.viewHead(phone);
+    }
 }

@@ -67,4 +67,10 @@ public interface CompanyUserMapper {
 
     @Select("SELECT id FROM companyinfo WHERE name=#{name}")
     int selectIdByName(@Param("name") String name);
+
+    @Select("SELECT id FROM user WHERE phone=#{phone} limit 1")
+    int selectIdByPhoneOfUser(@Param("phone") String phone);
+
+    @Select("SELECT path FROM userheadportrait WHERE id=#{id} limit 1")
+    String selectPathByIdOfUser(@Param("id") int id);
 }
