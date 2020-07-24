@@ -114,24 +114,6 @@ public class CompanyUserController {
     /*
     * 企业登录
     * */
-    /*@PostMapping("/login")
-    @SessionScope
-    public String login(@RequestParam(value = "phone") String email, String password, HttpSession session){
-        String query = companyUserService.queryByEmailAndPassword(email, password);
-        if (query.equals("success")){
-            String name = companyUserService.selectNameByEmail(email);
-            int id = companyUserService.selectIdByEmail(email);
-            session.setAttribute("companyEmail", email);
-            session.setAttribute("companyName", name);
-            session.setAttribute("userType", "company");
-            session.setAttribute("companyId", id);
-            return String.valueOf(id);
-        }else if (query.equals("fail_password")){
-            return "error_password";
-        }else {
-            return "error_ no companyuser";
-        }
-    }*/
     @PostMapping(path = "/login")
     public Object login(@RequestParam(value = "phone") String email, String password) {
         // 1. 获取subject(实体)
@@ -251,5 +233,26 @@ public class CompanyUserController {
     @GetMapping("/licenseExist")
     public String licenseExist(HttpSession session){
         return companyUserService.licenseExist(session);
+    }
+    /*
+     * 得到岗位详情的公司头像
+     * */
+    @GetMapping("/getHeadFromJobDetail/{name}")
+    public String getHeadFromJobDetail(@PathVariable(value = "name") String name){
+        return commonService.getHeadFromJobDetail(name);
+    }
+    /*
+     * 统计主页最下面的相应个数
+     * */
+    @GetMapping("/indexCount")
+    public int[] indexCount(){
+        return commonService.indexCount();
+    }
+    /*
+     * 公司查看学历简历时的头像
+     * */
+    @GetMapping("/viewHead/{phone}")
+    public String viewHead(@PathVariable(value = "phone") String phone){
+        return companyUserService.viewHead(phone);
     }
 }

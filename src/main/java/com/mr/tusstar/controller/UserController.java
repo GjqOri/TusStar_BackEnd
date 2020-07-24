@@ -103,24 +103,6 @@ public class UserController {
     /*
     * 登录功能
     * */
-    /*@PostMapping("/login")
-    public String login(String phone, String password, HttpSession session){
-        String select = userService.queryByPhoneAndPassword(phone, password);
-        if (select.equals("success")){
-            int id = userService.selectIdByPhone(phone);
-            String name = userService.selectNameByPhone(phone);
-            session.setAttribute("userId", id);
-            session.setAttribute("userPhone", phone);
-            session.setAttribute("userName", name);
-            session.setAttribute("userPhone", phone);
-            session.setAttribute("userType", "user");
-            return String.valueOf(id);
-        }else if (select.equals("fail_password")){
-            return "error_password";
-        }else {
-            return "error_no user";
-        }
-    }*/
     @PostMapping(path = "/login")
     public Object login(@RequestParam("phone") String phone,@RequestParam("password") String password) {
         // 1. 获取subject(实体)
@@ -247,5 +229,12 @@ public class UserController {
     @GetMapping("/headExist")
     public String headExist(HttpSession session){
         return commonService.headExist(session);
+    }
+    /*
+     * 统计主页最下面的相应个数
+     * */
+    @GetMapping("/indexCount")
+    public int[] indexCount(){
+        return commonService.indexCount();
     }
 }

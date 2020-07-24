@@ -71,6 +71,8 @@ public class ShiroConfig {
 
         // 4.4 添加过滤器映射
         // 也可以从数据库中查
+        filterMap.put("/user/indexCount","anon");
+        filterMap.put("/user/getHeadFromJobDetail/*","anon");
         filterMap.put("/user/register","anon");
         filterMap.put("/user/emailCode/*","anon");
         filterMap.put("/user/jobList","anon");
@@ -82,6 +84,7 @@ public class ShiroConfig {
         filterMap.put("/user/getJobTypeNum","anon");
         filterMap.put("/user/login","anon");
 
+        filterMap.put("/company/indexCount", "anon");
         filterMap.put("/company/register","anon");
         filterMap.put("/company/emailCode/*","anon");
         filterMap.put("/company/jobList","anon");
@@ -92,6 +95,7 @@ public class ShiroConfig {
         filterMap.put("/company/searchJobs","anon");
         filterMap.put("/company/getJobTypeNum","anon");
         filterMap.put("/company/login","anon");
+        filterMap.put("/company/getHeadFromJobDetail/*","anon");
 
         filterMap.put("/user/**","roles[user]");
         filterMap.put("/company/**","roles[companyuser]");

@@ -1,7 +1,6 @@
 package com.mr.tusstar.config.Shiro.Realm;
 
 import com.mr.tusstar.entity.CompanyUser;
-import com.mr.tusstar.entity.User;
 import com.mr.tusstar.service.CompanyUserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
