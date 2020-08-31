@@ -20,13 +20,13 @@ public class ResponseWrapper implements ResponseBodyAdvice<Object> {
 
     /**
      * 是否支持advice功能
-     * @param methodParameter
+     * @param returnType
      * @param aClass
-     * @return true=支持，false=不支持
+     * @return true-支持，false-不支持
      */
     @Override
-    public boolean supports(MethodParameter methodParameter, Class aClass) {
-        return true;
+    public boolean supports(MethodParameter returnType, Class aClass) {
+        return !returnType.getGenericParameterType().equals(ResultModel.class);
     }
 
     @Override
