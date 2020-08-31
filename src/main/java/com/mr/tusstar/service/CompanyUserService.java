@@ -215,4 +215,11 @@ public class CompanyUserService {
             return "noHave";
         }
     }
+    /*
+    * 公司查看学历简历时的头像
+    * */
+    public String viewHead(String phone){
+        int i = companyUserMapper.selectIdByPhoneOfUser(phone);
+        return companyUserMapper.selectPathByIdOfUser(i);
+    }
 }

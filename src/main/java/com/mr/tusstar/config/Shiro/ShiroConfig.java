@@ -71,12 +71,32 @@ public class ShiroConfig {
 
         // 4.4 添加过滤器映射
         // 也可以从数据库中查
-        filterMap.put("/user/login","anon");
+        filterMap.put("/user/indexCount","anon");
+        filterMap.put("/user/getHeadFromJobDetail/*","anon");
         filterMap.put("/user/register","anon");
-        filterMap.put("/user/emailCode","anon");
-        filterMap.put("/company/login","anon");
+        filterMap.put("/user/emailCode/*","anon");
+        filterMap.put("/user/jobList","anon");
+        filterMap.put("/user/job/*","anon");
+        filterMap.put("/user/getAllCompanies","anon");
+        filterMap.put("/user/companyDetail/*","anon");
+        filterMap.put("/user/postedJobs/*","anon");
+        filterMap.put("/user/searchJobs","anon");
+        filterMap.put("/user/getJobTypeNum","anon");
+        filterMap.put("/user/login","anon");
+
+        filterMap.put("/company/indexCount", "anon");
         filterMap.put("/company/register","anon");
-        filterMap.put("/company/emailCode","anon");
+        filterMap.put("/company/emailCode/*","anon");
+        filterMap.put("/company/jobList","anon");
+        filterMap.put("/company/job/*","anon");
+        filterMap.put("/company/getAllCompanies","anon");
+        filterMap.put("/company/companyDetail/*","anon");
+        filterMap.put("/company/postedJobs/*","anon");
+        filterMap.put("/company/searchJobs","anon");
+        filterMap.put("/company/getJobTypeNum","anon");
+        filterMap.put("/company/login","anon");
+        filterMap.put("/company/getHeadFromJobDetail/*","anon");
+
         filterMap.put("/user/**","roles[user]");
         filterMap.put("/company/**","roles[companyuser]");
         filterFactoryBean.setFilterChainDefinitionMap(filterMap);

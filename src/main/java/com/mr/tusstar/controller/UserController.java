@@ -57,26 +57,52 @@ public class UserController {
         return code;
     }
     /*
+     * 查看岗位列表
+     * */
+    @GetMapping("/jobList")
+    public Job[] jobList(){
+        return commonService.mainInfo();
+    }
+    /*
+     * 搜索岗位
+     * */
+    @PostMapping("/searchJobs")
+    public Job[] searchJobs(String jobName, String workLocation, String type){
+        return commonService.searchJobs(jobName, workLocation, type);
+    }
+    /*
+     * 得到公司列表
+     * */
+    @GetMapping("/getAllCompanies")
+    public CompanyInfo[] allCompanies(){
+        return commonService.allCompanies();
+    }
+    /*
+     * 统计职位分类个数
+     * */
+    @GetMapping("/getJobTypeNum")
+    public int[] selectJobTypeNum(){
+        return commonService.selectJobTypeNum();
+    }
+    /*
+     * 查看某个公司详细信息
+     * */
+    @GetMapping("/companyDetail/{id}")
+    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
+        return commonService.comapnyDetail(id);
+    }
+    /*
+     * 查看某个公司曾经发布的岗位
+     * */
+    @GetMapping("/postedJobs/{name}")
+    public Job[] postedJobs(@PathVariable(value = "name") String name){
+        return commonService.companyPostedJobs(name);
+    }
+
+
+    /*
     * 登录功能
     * */
-    /*@PostMapping("/login")
-    public String login(String phone, String password, HttpSession session){
-        String select = userService.queryByPhoneAndPassword(phone, password);
-        if (select.equals("success")){
-            int id = userService.selectIdByPhone(phone);
-            String name = userService.selectNameByPhone(phone);
-            session.setAttribute("userId", id);
-            session.setAttribute("userPhone", phone);
-            session.setAttribute("userName", name);
-            session.setAttribute("userPhone", phone);
-            session.setAttribute("userType", "user");
-            return String.valueOf(id);
-        }else if (select.equals("fail_password")){
-            return "error_password";
-        }else {
-            return "error_no user";
-        }
-    }*/
     @PostMapping(path = "/login")
     public Object login(@RequestParam("phone") String phone,@RequestParam("password") String password) {
         // 1. 获取subject(实体)
@@ -101,20 +127,12 @@ public class UserController {
             return LoginErrors.NOUSER_ERROR;
         }
     }
-
     /*
     * 返回登录名字l
     * */
     @GetMapping("/getName")
     public String getName(HttpSession session){
         return (String) session.getAttribute("userName");
-    }
-    /*
-     * 查看岗位列表
-     * */
-    @GetMapping("/jobList")
-    public Job[] jobList(){
-        return commonService.mainInfo();
     }
     /*
     * 查看某个岗位的详细信息
@@ -124,7 +142,7 @@ public class UserController {
         return commonService.allInfo(id);
     }
     /*
-    * 创建简历
+    * 创建简历import crypto from "crypto";
     * */
     @PostMapping("/createResume")
     public String createResume(String name, String degree, String birth, String sex,
@@ -163,27 +181,6 @@ public class UserController {
         return userService.resumeExist(session);
     }
     /*
-    * 得到公司列表
-    * */
-    @GetMapping("/getAllCompanies")
-    public CompanyInfo[] allCompanies(){
-        return commonService.allCompanies();
-    }
-    /*
-     * 查看某个公司详细信息
-     * */
-    @GetMapping("/companyDetail/{id}")
-    public CompanyInfo companyDetail(@PathVariable(value = "id") int id){
-        return commonService.comapnyDetail(id);
-    }
-    /*
-     * 查看某个公司曾经发布的岗位
-     * */
-    @GetMapping("/postedJobs/{name}")
-    public Job[] postedJobs(@PathVariable(value = "name") String name){
-        return commonService.companyPostedJobs(name);
-    }
-    /*
     * 用户申请岗位
     * */
     @PostMapping("/applyJob/{id}")
@@ -196,13 +193,6 @@ public class UserController {
     @GetMapping("/ifApplyJob/{jobId}")
     public String ifApplyJob(@PathVariable(value = "jobId") int jobId, HttpSession session){
         return userService.ifApplyJob(jobId, session);
-    }
-    /*
-    * 搜索岗位
-    * */
-    @PostMapping("/searchJobs")
-    public Job[] searchJobs(String jobName, String workLocation, String type){
-        return commonService.searchJobs(jobName, workLocation, type);
     }
     /*
     * 注销
@@ -241,10 +231,10 @@ public class UserController {
         return commonService.headExist(session);
     }
     /*
-    * 统计职位分类个数
-    * */
-    @GetMapping("/getJobTypeNum")
-    public int[] selectJobTypeNum(){
-        return commonService.selectJobTypeNum();
+     * 统计主页最下面的相应个数
+     * */
+    @GetMapping("/indexCount")
+    public int[] indexCount(){
+        return commonService.indexCount();
     }
 }
